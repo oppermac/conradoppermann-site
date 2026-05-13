@@ -52,7 +52,7 @@ export default function Landing() {
       <div className="absolute inset-0 flex h-full flex-col items-start justify-center px-[clamp(1.5rem,6vw,6rem)] text-left">
         <h1
           className="uppercase tracking-tight text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.4)] leading-[0.88]"
-          style={{ fontSize: "clamp(2.75rem, 10.5vw, 10rem)" }}
+          style={{ fontSize: "clamp(1.375rem, 5.25vw, 5rem)" }}
         >
           <span className="block font-bold">Conrad</span>
           <span className="block font-light">
