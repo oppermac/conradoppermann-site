@@ -10,6 +10,11 @@ const proximaNova = localFont({
       style: "normal",
     },
     {
+      path: "../../public/fonts/Proxima-Nova-Alt-Light.otf",
+      weight: "300",
+      style: "normal",
+    },
+    {
       path: "../../public/fonts/Proxima-Nova-Bold.otf",
       weight: "700",
       style: "normal",

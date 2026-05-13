@@ -51,12 +51,13 @@ export default function Landing() {
       {/* Wordmark + contact */}
       <div className="absolute inset-0 flex h-full flex-col items-start justify-center px-[clamp(1.5rem,6vw,6rem)] text-left">
         <h1
-          className="font-extrabold tracking-tight text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.4)] leading-[0.88]"
+          className="uppercase tracking-tight text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.4)] leading-[0.88]"
           style={{ fontSize: "clamp(2.75rem, 10.5vw, 10rem)" }}
         >
-          Conrad
-          <br />
-          Oppermann<span className="opacity-75">.</span>
+          <span className="block font-bold">Conrad</span>
+          <span className="block font-light">
+            Oppermann<span className="opacity-75">.</span>
+          </span>
         </h1>
 
         <div className="mt-[clamp(1.5rem,3vw,2.5rem)] flex items-center gap-4 text-[10px] md:text-xs font-bold uppercase tracking-[0.32em] md:tracking-[0.4em]">
@@ -91,16 +92,8 @@ export default function Landing() {
       {/* Bottom centered tagline between arrows */}
       <div className="pointer-events-none absolute inset-x-0 bottom-[clamp(2rem,5vw,3.25rem)] flex items-center justify-center gap-4 text-[10px] md:text-xs font-bold tracking-[0.4em] uppercase text-[#f5f2ec]/65">
         <span aria-hidden>←</span>
-        <span>Independent · MMXXVI</span>
+        <span>MMXXVI</span>
         <span aria-hidden>→</span>
-      </div>
-
-      {/* Side wordmarks (vertical hairline labels) */}
-      <div className="pointer-events-none absolute left-[clamp(1.5rem,3vw,2.75rem)] top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[10px] font-bold tracking-[0.5em] uppercase text-[#f5f2ec]/40 whitespace-nowrap">
-        Dublin
-      </div>
-      <div className="pointer-events-none absolute right-[clamp(1.5rem,3vw,2.75rem)] top-1/2 -translate-y-1/2 rotate-90 origin-center text-[10px] font-bold tracking-[0.5em] uppercase text-[#f5f2ec]/40 whitespace-nowrap">
-        Worldwide
       </div>
     </section>
   );
