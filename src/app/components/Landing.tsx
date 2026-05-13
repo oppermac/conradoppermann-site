@@ -36,7 +36,7 @@ export default function Landing() {
       <CornerTicks />
 
       {/* Top hairline marque */}
-      <div className="absolute left-1/2 top-[clamp(2rem,5vw,3.25rem)] -translate-x-1/2 flex items-center gap-3 text-[10px] uppercase tracking-[0.5em] text-[#f5f2ec]/55">
+      <div className="absolute left-1/2 top-[clamp(2rem,5vw,3.25rem)] -translate-x-1/2 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.5em] text-[#f5f2ec]/55">
         <span className="h-px w-10 bg-[color:var(--rule)]" />
         <span>C · O</span>
         <span className="h-px w-10 bg-[color:var(--rule)]" />
@@ -59,7 +59,7 @@ export default function Landing() {
           Oppermann<span className="opacity-75">.</span>
         </h1>
 
-        <div className="mt-[clamp(1.5rem,3vw,2.5rem)] flex items-center gap-4 text-[10px] md:text-xs uppercase tracking-[0.32em] md:tracking-[0.4em]">
+        <div className="mt-[clamp(1.5rem,3vw,2.5rem)] flex items-center gap-4 text-[10px] md:text-xs font-bold uppercase tracking-[0.32em] md:tracking-[0.4em]">
           <span className="h-px w-8 bg-[color:var(--rule)]" />
           <a
             href="https://mavericksocial.com"
@@ -89,17 +89,17 @@ export default function Landing() {
       </div>
 
       {/* Bottom centered tagline between arrows */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-[clamp(2rem,5vw,3.25rem)] flex items-center justify-center gap-4 text-[10px] md:text-xs tracking-[0.4em] uppercase text-[#f5f2ec]/65">
+      <div className="pointer-events-none absolute inset-x-0 bottom-[clamp(2rem,5vw,3.25rem)] flex items-center justify-center gap-4 text-[10px] md:text-xs font-bold tracking-[0.4em] uppercase text-[#f5f2ec]/65">
         <span aria-hidden>←</span>
         <span>Independent · MMXXVI</span>
         <span aria-hidden>→</span>
       </div>
 
       {/* Side wordmarks (vertical hairline labels) */}
-      <div className="pointer-events-none absolute left-[clamp(1.5rem,3vw,2.75rem)] top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[10px] tracking-[0.5em] uppercase text-[#f5f2ec]/40 whitespace-nowrap">
+      <div className="pointer-events-none absolute left-[clamp(1.5rem,3vw,2.75rem)] top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[10px] font-bold tracking-[0.5em] uppercase text-[#f5f2ec]/40 whitespace-nowrap">
         Dublin
       </div>
-      <div className="pointer-events-none absolute right-[clamp(1.5rem,3vw,2.75rem)] top-1/2 -translate-y-1/2 rotate-90 origin-center text-[10px] tracking-[0.5em] uppercase text-[#f5f2ec]/40 whitespace-nowrap">
+      <div className="pointer-events-none absolute right-[clamp(1.5rem,3vw,2.75rem)] top-1/2 -translate-y-1/2 rotate-90 origin-center text-[10px] font-bold tracking-[0.5em] uppercase text-[#f5f2ec]/40 whitespace-nowrap">
         Worldwide
       </div>
     </section>

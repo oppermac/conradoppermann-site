@@ -1,10 +1,30 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const display = Montserrat({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+const proximaNova = localFont({
+  src: [
+    {
+      path: "../../public/fonts/Proxima-Nova-Thin.otf",
+      weight: "100",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/Proxima-Nova-Bold.otf",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/Proxima-Nova-Extrabold.otf",
+      weight: "800",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/Proxima-Nova-Black.otf",
+      weight: "900",
+      style: "normal",
+    },
+  ],
   variable: "--font-sans",
   display: "swap",
 });
@@ -25,7 +45,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`dark ${display.variable} antialiased`}>
+    <html lang="en" className={`dark ${proximaNova.variable} antialiased`}>
       <body>{children}</body>
     </html>
   );
