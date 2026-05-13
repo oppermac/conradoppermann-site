@@ -1,175 +1,135 @@
 "use client";
 
-import { useRef } from "react";
-import {
-  motion,
-  useMotionTemplate,
-  useMotionValue,
-  useSpring,
-  useTransform,
-} from "framer-motion";
-
 export default function Landing() {
-  const buttonRef = useRef<HTMLAnchorElement>(null);
-
-  // Cursor position over the contact pill, normalized to -0.5..0.5
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-
-  const smx = useSpring(mx, { stiffness: 200, damping: 25, mass: 0.4 });
-  const smy = useSpring(my, { stiffness: 200, damping: 25, mass: 0.4 });
-
-  const tiltX = useTransform(smy, [-0.5, 0.5], [6, -6]);
-  const tiltY = useTransform(smx, [-0.5, 0.5], [-8, 8]);
-
-  const highlightX = useTransform(smx, [-0.5, 0.5], [20, 80]);
-  const highlightY = useTransform(smy, [-0.5, 0.5], [20, 80]);
-  const highlightBg = useMotionTemplate`radial-gradient(140px circle at ${highlightX}% ${highlightY}%, rgba(255,255,255,0.22), transparent 60%)`;
-
-  const handleMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const node = buttonRef.current;
-    if (!node) return;
-    const rect = node.getBoundingClientRect();
-    const nx = (e.clientX - rect.left) / rect.width - 0.5;
-    const ny = (e.clientY - rect.top) / rect.height - 0.5;
-    mx.set(nx);
-    my.set(ny);
-  };
-
-  const handleLeave = () => {
-    mx.set(0);
-    my.set(0);
-  };
-
   return (
-    <main className="relative h-dvh w-full overflow-hidden bg-[#070710] text-white">
-      {/* Ambient gradient blobs */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <motion.div
-          aria-hidden
-          className="absolute top-[5%] left-[5%] h-[55vmax] w-[55vmax] rounded-full opacity-95 blur-[80px]"
-          style={{
-            background:
-              "radial-gradient(circle at center, rgba(140,100,255,1), rgba(70,40,200,0) 65%)",
-          }}
-          animate={{ x: [0, 60, -40, 0], y: [0, 40, -30, 0] }}
-          transition={{ duration: 28, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          aria-hidden
-          className="absolute -bottom-[10%] -right-[5%] h-[60vmax] w-[60vmax] rounded-full opacity-90 blur-[90px]"
-          style={{
-            background:
-              "radial-gradient(circle at center, rgba(255,110,180,0.95), rgba(255,60,120,0) 65%)",
-          }}
-          animate={{ x: [0, -50, 30, 0], y: [0, -40, 50, 0] }}
-          transition={{ duration: 34, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          aria-hidden
-          className="absolute top-[40%] left-[55%] h-[45vmax] w-[45vmax] -translate-x-1/2 rounded-full opacity-80 blur-[80px]"
-          style={{
-            background:
-              "radial-gradient(circle at center, rgba(60,180,255,0.85), rgba(40,120,200,0) 70%)",
-          }}
-          animate={{ x: [-40, 40, -20, -40], y: [20, -30, 40, 20] }}
-          transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          aria-hidden
-          className="absolute top-[15%] right-[10%] h-[35vmax] w-[35vmax] rounded-full opacity-70 blur-[70px]"
-          style={{
-            background:
-              "radial-gradient(circle at center, rgba(255,180,90,0.7), rgba(220,120,40,0) 65%)",
-          }}
-          animate={{ x: [30, -30, 20, 30], y: [-20, 30, -10, -20] }}
-          transition={{ duration: 26, repeat: Infinity, ease: "easeInOut" }}
-        />
-        {/* Vignette to keep edges dark */}
-        <div
-          aria-hidden
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse at center, transparent 30%, rgba(7,7,16,0.6) 90%)",
-          }}
-        />
-      </div>
-
-      {/* Subtle film grain / noise (CSS only, via SVG inline) */}
-      <div
+    <section
+      className="relative h-dvh w-full overflow-hidden bg-[#0a0a0a] text-[#f5f2ec]"
+      style={{ isolation: "isolate" }}
+    >
+      {/* Background video */}
+      <video
+        className="absolute inset-0 h-full w-full object-cover"
+        src="/Splash.mp4"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.035] mix-blend-overlay"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>\")",
-        }}
       />
 
-      {/* Content */}
-      <div className="relative z-10 flex h-full flex-col items-center justify-center px-6">
-        <motion.h1
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center text-[clamp(3rem,11vw,10rem)] font-black uppercase leading-[0.9] tracking-[-0.05em] text-white"
+      {/* Legibility gradient over the video */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/15 to-black/70" />
+
+      {/* Frame hairlines — full perimeter */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-[clamp(0.75rem,1.5vw,1.5rem)] border border-[color:var(--rule)]"
+      />
+      {/* Inner offset hairline rectangle */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-[clamp(1.25rem,2.5vw,2.5rem)] border border-[color:var(--rule)]/60"
+      />
+
+      {/* Corner tick marks */}
+      <CornerTicks />
+
+      {/* Top hairline marque */}
+      <div className="absolute left-1/2 top-[clamp(2rem,5vw,3.25rem)] -translate-x-1/2 flex items-center gap-3 text-[10px] uppercase tracking-[0.5em] text-[#f5f2ec]/55">
+        <span className="h-px w-10 bg-[color:var(--rule)]" />
+        <span>C · O</span>
+        <span className="h-px w-10 bg-[color:var(--rule)]" />
+      </div>
+
+      {/* Vertical center hairline (very subtle, optional cinematic line) */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-[clamp(4rem,8vw,6rem)] bottom-[clamp(4rem,8vw,6rem)] w-px bg-[color:var(--rule)]/30"
+      />
+
+      {/* Wordmark + contact */}
+      <div className="absolute inset-0 flex h-full flex-col items-start justify-center px-[clamp(1.5rem,6vw,6rem)] text-left">
+        <h1
+          className="font-extrabold tracking-tight text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.4)] leading-[0.88]"
+          style={{ fontSize: "clamp(2.75rem, 10.5vw, 10rem)" }}
         >
           Conrad
           <br />
-          Oppermann
-        </motion.h1>
+          Oppermann<span className="opacity-75">.</span>
+        </h1>
 
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-10"
-          style={{ perspective: 800 }}
-        >
-          <motion.a
-            ref={buttonRef}
+        <div className="mt-[clamp(1.5rem,3vw,2.5rem)] flex items-center gap-4 text-[10px] md:text-xs uppercase tracking-[0.32em] md:tracking-[0.4em]">
+          <span className="h-px w-8 bg-[color:var(--rule)]" />
+          <a
             href="https://mavericksocial.com"
             target="_blank"
             rel="noopener noreferrer"
-            onMouseMove={handleMove}
-            onMouseLeave={handleLeave}
-            style={{
-              rotateX: tiltX,
-              rotateY: tiltY,
-              transformStyle: "preserve-3d",
-            }}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ type: "spring", stiffness: 300, damping: 24 }}
-            className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full border border-white/30 bg-white/[0.1] px-9 py-4 text-sm font-bold uppercase tracking-[0.15em] text-white shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.4),inset_0_-1px_0_rgba(255,255,255,0.05)] backdrop-blur-2xl backdrop-saturate-200 transition-colors"
+            className="group relative inline-flex items-center gap-3 py-2 text-[#f5f2ec]/85 hover:text-[#f5f2ec] transition-colors"
           >
-            {/* Specular highlight that follows cursor */}
-            <motion.span
-              aria-hidden
-              className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-              style={{ background: highlightBg }}
-            />
-            {/* Top edge sheen */}
-            <span
-              aria-hidden
-              className="pointer-events-none absolute inset-x-3 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent"
-            />
-            <span className="relative">Contact</span>
+            <span>Contact</span>
             <svg
-              className="relative h-3.5 w-3.5 -mr-0.5 transition-transform duration-300 group-hover:translate-x-0.5"
+              className="h-3 w-3 transition-transform duration-500 ease-out group-hover:translate-x-1"
               viewBox="0 0 16 16"
               fill="none"
               stroke="currentColor"
-              strokeWidth="1.5"
+              strokeWidth="1.25"
               strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <path d="M3.5 8h9" />
-              <path d="M9 4.5 12.5 8 9 11.5" />
+              <path d="M3 8h10" />
+              <path d="M9 4 13 8 9 12" />
             </svg>
-          </motion.a>
-        </motion.div>
+            <span
+              aria-hidden
+              className="absolute bottom-0 left-0 h-px w-full origin-left scale-x-0 bg-[#f5f2ec]/70 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100"
+            />
+          </a>
+        </div>
       </div>
-    </main>
+
+      {/* Bottom centered tagline between arrows */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-[clamp(2rem,5vw,3.25rem)] flex items-center justify-center gap-4 text-[10px] md:text-xs tracking-[0.4em] uppercase text-[#f5f2ec]/65">
+        <span aria-hidden>←</span>
+        <span>Independent · MMXXVI</span>
+        <span aria-hidden>→</span>
+      </div>
+
+      {/* Side wordmarks (vertical hairline labels) */}
+      <div className="pointer-events-none absolute left-[clamp(1.5rem,3vw,2.75rem)] top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[10px] tracking-[0.5em] uppercase text-[#f5f2ec]/40 whitespace-nowrap">
+        Dublin
+      </div>
+      <div className="pointer-events-none absolute right-[clamp(1.5rem,3vw,2.75rem)] top-1/2 -translate-y-1/2 rotate-90 origin-center text-[10px] tracking-[0.5em] uppercase text-[#f5f2ec]/40 whitespace-nowrap">
+        Worldwide
+      </div>
+    </section>
+  );
+}
+
+function CornerTicks() {
+  const corner = "absolute h-3 w-3";
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-[clamp(0.75rem,1.5vw,1.5rem)]">
+      {/* top-left */}
+      <div className={`${corner} -top-px -left-px`}>
+        <span className="absolute top-0 left-0 h-3 w-px bg-[#f5f2ec]/80" />
+        <span className="absolute top-0 left-0 h-px w-3 bg-[#f5f2ec]/80" />
+      </div>
+      {/* top-right */}
+      <div className={`${corner} -top-px -right-px`}>
+        <span className="absolute top-0 right-0 h-3 w-px bg-[#f5f2ec]/80" />
+        <span className="absolute top-0 right-0 h-px w-3 bg-[#f5f2ec]/80" />
+      </div>
+      {/* bottom-left */}
+      <div className={`${corner} -bottom-px -left-px`}>
+        <span className="absolute bottom-0 left-0 h-3 w-px bg-[#f5f2ec]/80" />
+        <span className="absolute bottom-0 left-0 h-px w-3 bg-[#f5f2ec]/80" />
+      </div>
+      {/* bottom-right */}
+      <div className={`${corner} -bottom-px -right-px`}>
+        <span className="absolute bottom-0 right-0 h-3 w-px bg-[#f5f2ec]/80" />
+        <span className="absolute bottom-0 right-0 h-px w-3 bg-[#f5f2ec]/80" />
+      </div>
+    </div>
   );
 }
