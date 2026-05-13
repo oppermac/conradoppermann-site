@@ -109,13 +109,14 @@ export default function Landing() {
       {/* Content */}
       <div className="relative z-10 flex h-full flex-col items-center justify-center px-6">
         <motion.h1
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center text-[clamp(2.5rem,8vw,7rem)] font-light leading-[0.95] tracking-[-0.04em] text-white"
-          style={{ fontVariationSettings: "'wght' 300" }}
+          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center text-[clamp(3rem,11vw,10rem)] font-black uppercase leading-[0.9] tracking-[-0.05em] text-white"
         >
-          Conrad Oppermann
+          Conrad
+          <br />
+          Oppermann
         </motion.h1>
 
         <motion.div
@@ -140,7 +141,7 @@ export default function Landing() {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 300, damping: 24 }}
-            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-white/25 bg-white/[0.08] px-8 py-3.5 text-sm tracking-wide text-white shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.35),inset_0_-1px_0_rgba(255,255,255,0.05)] backdrop-blur-2xl backdrop-saturate-200 transition-colors"
+            className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full border border-white/30 bg-white/[0.1] px-9 py-4 text-sm font-bold uppercase tracking-[0.15em] text-white shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.4),inset_0_-1px_0_rgba(255,255,255,0.05)] backdrop-blur-2xl backdrop-saturate-200 transition-colors"
           >
             {/* Specular highlight that follows cursor */}
             <motion.span
