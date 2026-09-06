@@ -1,14 +1,15 @@
 import Link from "next/link";
 import { PageHeader } from "../components/PageHeader";
 import { envStatus } from "@/lib/hub/env";
-import { dublinParts } from "@/lib/hub/time";
+import { dublin } from "@/lib/hub/time";
+import { formatDayLong } from "@/lib/hub/time";
 
 export default function TodayPage() {
-  const now = dublinParts();
+  const now = dublin();
   const status = envStatus();
   const required = status.filter((s) => s.required);
   const configured = required.filter((s) => s.set).length;
-  const eyebrow = `${now.weekday} ${now.day} ${now.month}`.toUpperCase();
+  const eyebrow = formatDayLong(now.dayKey).toUpperCase();
 
   return (
     <>

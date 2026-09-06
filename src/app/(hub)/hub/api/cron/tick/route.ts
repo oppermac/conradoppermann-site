@@ -1,28 +1,21 @@
 import { NextResponse } from "next/server";
 import { authorizeCron } from "@/lib/hub/cron-auth";
-import { dublinParts } from "@/lib/hub/time";
+import { tick } from "@/lib/hub/jobs/tick";
 
 export const maxDuration = 300;
 
-/** Phase 0 skeleton: authenticates and reports. The job registry arrives in Phase 6. */
-async function tick(req: Request) {
+async function handle(req: Request) {
   const auth = await authorizeCron(req);
   if (!auth.ok) return auth.response;
-  const now = dublinParts();
-  return NextResponse.json({
-    ok: true,
-    via: auth.via,
-    local: `${now.year}-${now.month}-${now.day} ${now.hour}:${now.minute}`,
-    ran: [],
-    skipped: [],
-    failed: [],
-  });
+  const url = new URL(req.url);
+  const result = await tick({ only: url.searchParams.get("job"), force: url.searchParams.get("force") === "1" });
+  return NextResponse.json({ ok: result.failed.length === 0, via: auth.via, ...result });
 }
 
 export async function GET(req: Request) {
-  return tick(req);
+  return handle(req);
 }
 
 export async function POST(req: Request) {
-  return tick(req);
+  return handle(req);
 }
