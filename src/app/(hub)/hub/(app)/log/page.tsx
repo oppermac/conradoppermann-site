@@ -1,13 +1,15 @@
 import { PageHeader } from "../../components/PageHeader";
-import { Placeholder } from "../../components/Placeholder";
+import { LogInline } from "./LogInline";
 
 export const metadata = { title: "Log" };
 
-export default function LogPage() {
+export default async function LogPage({ searchParams }: { searchParams: Promise<{ panel?: string }> }) {
+  const { panel } = await searchParams;
+  const initial = (["menu", "photo", "repeat", "activity", "checkin", "text", "medication", "weight", "memorable"] as const).find((p) => p === panel) ?? "menu";
   return (
     <>
       <PageHeader title="Log" />
-      <Placeholder phase={4} what="Photo meal, repeat meal, activity and check-in." />
+      <LogInline initial={initial} />
     </>
   );
 }

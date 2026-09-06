@@ -1,11 +1,14 @@
 import { Sidebar } from "./Sidebar";
 import { TabBar } from "./TabBar";
+import { LogSheetProvider } from "./sheet/LogSheetProvider";
 
 export function HubShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-dvh lg:grid lg:grid-cols-[240px_1fr]">
+    <LogSheetProvider>
+      <div className="min-h-dvh lg:grid lg:grid-cols-[240px_1fr]">
       <Sidebar />
       <div
+        id="hub-page"
         className="min-w-0 lg:pb-0"
         style={{ paddingBottom: "calc(var(--tabbar-h) + var(--sab) + 1rem)" }}
       >
@@ -17,6 +20,7 @@ export function HubShell({ children }: { children: React.ReactNode }) {
         </main>
       </div>
       <TabBar />
-    </div>
+      </div>
+    </LogSheetProvider>
   );
 }

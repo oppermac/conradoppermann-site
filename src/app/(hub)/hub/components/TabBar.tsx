@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { TAB_ITEMS, isActive } from "./nav";
+import { useLogSheet } from "./sheet/LogSheetProvider";
 
 export function TabBar() {
   const pathname = usePathname();
+  const { open } = useLogSheet();
   return (
     <nav
       aria-label="Primary"
@@ -22,6 +24,10 @@ export function TabBar() {
                 <Link
                   href={item.href}
                   aria-label={item.label}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    open("menu");
+                  }}
                   className="hub-press flex h-11 w-11 items-center justify-center rounded-full bg-tint text-white shadow-md"
                 >
                   <Icon size={24} strokeWidth={2.4} aria-hidden />

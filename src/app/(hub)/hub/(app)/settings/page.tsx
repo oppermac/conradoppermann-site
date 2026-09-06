@@ -17,6 +17,9 @@ import {
   TargetsSection,
   WorkHoursSection,
 } from "./SettingsSections";
+import { IntegrationsSection } from "./IntegrationsSection";
+import { IntelligenceSection } from "./IntelligenceSection";
+import { InstallSection } from "./InstallSection";
 
 export const metadata = { title: "Settings" };
 
@@ -37,6 +40,7 @@ export default async function SettingsPage() {
       <PageHeader title="Settings" />
       <div className="flex flex-col gap-4">
         {!dbConnected ? <DbNotice /> : null}
+        <IntegrationsSection />
         <TargetsSection initial={settings.targets} dbConnected={dbConnected} />
         <NutritionSection initial={settings.nutrition} dbConnected={dbConnected} />
         <SleepSection initial={settings.sleep} dbConnected={dbConnected} />
@@ -44,8 +48,10 @@ export default async function SettingsPage() {
         <PeopleSection initial={people} dbConnected={dbConnected} />
         <AlivenessListSection initial={settings.aliveness} dbConnected={dbConnected} />
         <NotificationsSection initial={settings.notifications} dbConnected={dbConnected} />
+        <IntelligenceSection />
         <WorkHoursSection initial={settings.workHours} dbConnected={dbConnected} />
         <CupsSection initial={settings.cups} dbConnected={dbConnected} />
+        <InstallSection />
         <SetupStatus />
         <section className="hub-card p-5">
           <div className="hub-eyebrow">Security</div>

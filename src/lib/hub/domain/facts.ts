@@ -7,7 +7,7 @@ import { db } from "../db/client";
 import { activities, calendarEvents, checkins, whoopSleeps } from "../db/schema";
 import { isConsistentDay, totalsForDays } from "../meals/store";
 import type { Settings } from "../settings";
-import { addDays, dayRange, localToUtc, monthRange, weekStart, type DayKey } from "../time";
+import { addDays, dayKey, dayRange, localToUtc, monthRange, weekStart, type DayKey } from "../time";
 import type { BehaviourFacts } from "./kpis";
 
 const TRAINING_TYPES = ["cardio", "strength", "mixed", "team_sport"];
@@ -78,7 +78,7 @@ export async function weekFacts(anyDay: DayKey, settings: Settings, now = new Da
   }
 
   // Meals: consistent days so far this week (only days that have started).
-  const todayKey = anyDay;
+  const todayKey = dayKey(now);
   const daysSoFar = dayRange(w.start, w.end).filter((d) => d <= todayKey);
   const totals = await totalsForDays(daysSoFar);
   const consistentDays = totals.filter((d) => isConsistentDay(d, settings.nutrition)).length;

@@ -1,13 +1,16 @@
 import { PageHeader } from "../../components/PageHeader";
-import { Placeholder } from "../../components/Placeholder";
+import { NotConnected } from "../../components/NotConnected";
+import { BodyView } from "../../components/body/BodyView";
+import { bodyData } from "@/lib/hub/queries/body";
 
 export const metadata = { title: "Body" };
 
-export default function BodyPage() {
+export default async function BodyPage() {
+  const data = await bodyData();
   return (
     <>
       <PageHeader title="Body" />
-      <Placeholder phase={2} what="Recovery, sleep, strain and your training log from Whoop." />
+      {data.dbConnected ? <BodyView data={data} /> : <NotConnected />}
     </>
   );
 }

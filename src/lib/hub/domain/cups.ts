@@ -2,7 +2,7 @@
  * Cups evaluator: turns the week's activities, sleeps and meal days into neuro_drops rows (idempotent via
  * the (source_type, source_id, cup) unique index) and reads back fill levels.
  */
-import { and, eq, gte, lte, notInArray, sql } from "drizzle-orm";
+import { and, eq, gte, inArray, lte, sql } from "drizzle-orm";
 import { db } from "../db/client";
 import { activities, checkins, neuroDrops, whoopSleeps } from "../db/schema";
 import { isConsistentDay, totalsForDays } from "../meals/store";
@@ -93,7 +93,7 @@ export async function evaluateCupsForWeek(wk: WeekKey, settings: Settings): Prom
   // Drop rows for sources that no longer qualify (voided activity, edited meal, re-scored sleep).
   const existing = await db.select({ id: neuroDrops.id, sourceType: neuroDrops.sourceType, sourceId: neuroDrops.sourceId, cup: neuroDrops.cup }).from(neuroDrops).where(eq(neuroDrops.weekKey, wk));
   const stale = existing.filter((r) => !keys.includes(`${r.sourceType}|${r.sourceId}|${r.cup}`)).map((r) => r.id);
-  if (stale.length) await db.delete(neuroDrops).where(sql`${neuroDrops.id} in ${stale}`);
+  if (stale.length) await db.delete(neuroDrops).where(inArray(neuroDrops.id, stale));
   return { written, removed: stale.length };
 }
 
@@ -122,4 +122,3 @@ export async function monthCupFills(monthKey: string, capacity: number): Promise
   });
 }
 
-export const _unused = notInArray;

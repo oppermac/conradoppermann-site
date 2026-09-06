@@ -5,9 +5,11 @@ import { usePathname } from "next/navigation";
 import { Plus } from "lucide-react";
 import { SETTINGS_ITEM, SIDEBAR_ITEMS, isActive } from "./nav";
 import { proximaNova } from "@/app/fonts";
+import { useLogSheet } from "./sheet/LogSheetProvider";
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { open } = useLogSheet();
   return (
     <aside className="hub-chrome sticky top-0 hidden h-dvh w-[240px] flex-col border-r border-hairline px-4 py-6 lg:flex">
       <div className="px-2">
@@ -18,6 +20,10 @@ export function Sidebar() {
       </div>
       <Link
         href="/hub/log"
+        onClick={(e) => {
+          e.preventDefault();
+          open("menu");
+        }}
         className="hub-press mt-6 flex items-center justify-center gap-2 rounded-full bg-ink px-4 py-2.5 text-[15px] font-semibold text-page"
       >
         <Plus size={18} strokeWidth={2.4} aria-hidden />

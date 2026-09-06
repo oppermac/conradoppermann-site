@@ -1,5 +1,5 @@
 /** Glue: facts → gaps → suggestions with slots. Used by Today, Week, nudges and the coach. */
-import { desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, gte } from "drizzle-orm";
 import { db } from "../db/client";
 import { activities, people as peopleTable } from "../db/schema";
 import { getSettings } from "../settings";
@@ -14,20 +14,18 @@ export type SuggestionWithSlots = Suggestion & { slots: Slot[] };
 
 export async function peopleDue(todayKey: string): Promise<PersonDue[]> {
   const rows = await db.select().from(peopleTable).orderBy(peopleTable.name);
+  if (rows.length === 0) return [];
+  const since = addDays(todayKey, -365);
+  const recent = await db
+    .select({ day: activities.day, title: activities.title, people: activities.people })
+    .from(activities)
+    .where(and(gte(activities.day, since), eq(activities.void, false)))
+    .orderBy(desc(activities.day));
   const out: PersonDue[] = [];
   for (const p of rows) {
-    const names = [p.name, ...(p.aliases ?? [])].map((n) => n.toLowerCase());
-    const [last] = await db
-      .select({ day: activities.day })
-      .from(activities)
-      .where(
-        sql`${activities.void} = false and (
-          exists (select 1 from unnest(coalesce(${activities.people}, '{}')) as n where lower(n) = any(${names}))
-          or lower(${activities.title}) ~ ${`\\m(${names.map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})\\M`}
-        )`,
-      )
-      .orderBy(desc(activities.day))
-      .limit(1);
+    const names = [p.name, ...(p.aliases ?? [])].map((n) => n.trim().toLowerCase()).filter(Boolean);
+    const pattern = new RegExp(`\\b(${names.map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})\\b`, "i");
+    const last = recent.find((a) => (a.people ?? []).some((n) => names.includes(n.trim().toLowerCase())) || pattern.test(a.title));
     const daysSince = last ? daysBetween(last.day, todayKey) : null;
     out.push({
       id: p.id,
@@ -68,4 +66,3 @@ export async function computeGapsAndSuggestions(nowDate = new Date()): Promise<{
   return { gaps, suggestions: withSlots, cups, lowCups };
 }
 
-export const _eq = eq;
