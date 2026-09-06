@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { upload } from "@vercel/blob/client";
 import { Camera } from "lucide-react";
 import type { MealEstimate } from "@/lib/hub/meals/schema";
 
@@ -42,13 +41,17 @@ export function MealCamera({ onEstimate, onError }: { onEstimate: (estimate: Mea
       const sized = await webSizedImage(file);
       setPreview(URL.createObjectURL(sized));
       setPhase("uploading");
-      const day = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Dublin" }).format(new Date());
-      const blob = await upload(`meals/${day}/${crypto.randomUUID()}.jpg`, sized, { access: "public", handleUploadUrl: "/hub/api/meals/upload", contentType: "image/jpeg" });
+      const form = new FormData();
+      form.append("file", sized, "meal.jpg");
+      const up = await fetch("/hub/api/meals/upload", { method: "POST", body: form });
+      const upData = (await up.json().catch(() => ({}))) as { url?: string; error?: string };
+      if (!up.ok || !upData.url) throw new Error(upData.error ?? "Couldn’t upload the photo.");
+      const photoUrl = upData.url;
       setPhase("analysing");
-      const res = await fetch("/hub/api/meals/analyze", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ photoUrl: blob.url }) });
+      const res = await fetch("/hub/api/meals/analyze", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ photoUrl }) });
       const data = (await res.json().catch(() => ({}))) as { error?: string; estimate?: MealEstimate; model?: string };
       if (!res.ok || !data.estimate) throw new Error(data.error ?? "Couldn’t read this one. Try again, or log it as text.");
-      onEstimate(data.estimate, blob.url, data.model ?? "");
+      onEstimate(data.estimate, photoUrl, data.model ?? "");
     } catch (err) {
       onError(err instanceof Error ? err.message : "Couldn’t read this one. Try again, or log it as text.");
     } finally {

@@ -1,35 +1,31 @@
-import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
-import { NextResponse, type NextRequest } from "next/server";
+import { put } from "@vercel/blob";
+import { NextResponse } from "next/server";
 import { requireSession } from "@/lib/hub/session";
+import { dayKey } from "@/lib/hub/time";
+
+export const maxDuration = 30;
+
+const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 /**
- * Signed-URL issuer for direct-to-Blob meal photo uploads (session-gated by proxy.ts and here).
- * The client downscales to ~1024 px first, then POSTs the analyze route with the blob URL —
- * onUploadCompleted never fires on localhost, so the client drives the next step.
+ * Meal photos are downscaled on the phone (~1024 px, a few hundred KB), so they go through the server:
+ * the Blob SDK authenticates with Vercel's OIDC token + BLOB_STORE_ID here (a read-write token also works).
  */
-export async function POST(request: NextRequest): Promise<NextResponse> {
+export async function POST(request: Request): Promise<NextResponse> {
   const denied = await requireSession();
   if (denied) return denied;
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    return NextResponse.json({ error: "BLOB_READ_WRITE_TOKEN is not set" }, { status: 503 });
+  if (!process.env.BLOB_READ_WRITE_TOKEN && !process.env.BLOB_STORE_ID) {
+    return NextResponse.json({ error: "The photo store isn't connected yet" }, { status: 503 });
   }
-  const body = (await request.json()) as HandleUploadBody;
+  const form = await request.formData().catch(() => null);
+  const file = form?.get("file");
+  if (!(file instanceof File)) return NextResponse.json({ error: "file is required" }, { status: 400 });
+  if (!ALLOWED.has(file.type)) return NextResponse.json({ error: "Only JPEG, PNG or WebP photos" }, { status: 400 });
+  if (file.size > 6 * 1024 * 1024) return NextResponse.json({ error: "Photo is too large" }, { status: 413 });
   try {
-    const result = await handleUpload({
-      body,
-      request,
-      onBeforeGenerateToken: async () => ({
-        allowedContentTypes: ["image/jpeg", "image/png", "image/webp"],
-        maximumSizeInBytes: 6 * 1024 * 1024,
-        addRandomSuffix: true,
-        validUntil: Date.now() + 5 * 60_000,
-      }),
-      onUploadCompleted: async ({ blob }) => {
-        console.log("[meals] photo uploaded", blob.pathname);
-      },
-    });
-    return NextResponse.json(result);
-  } catch (error) {
-    return NextResponse.json({ error: (error as Error).message }, { status: 400 });
+    const blob = await put(`meals/${dayKey()}/${crypto.randomUUID()}.jpg`, file, { access: "public", addRandomSuffix: true, contentType: file.type });
+    return NextResponse.json({ url: blob.url });
+  } catch (err) {
+    return NextResponse.json({ error: err instanceof Error ? err.message : String(err) }, { status: 502 });
   }
 }
