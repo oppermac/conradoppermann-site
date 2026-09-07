@@ -86,7 +86,8 @@ const SEED_RULES: SeedRule[] = [
   { pattern: "dentist", domain: "none", kind: "none", priority: 5 },
   { pattern: "doctor", domain: "none", kind: "none", priority: 5 },
   { pattern: "admin", domain: "none", kind: "none", priority: 5 },
-  { pattern: "cancel", "correspondance", domain: "none", kind: "none", priority: 5 },
+  { pattern: "cancel", domain: "none", kind: "none", priority: 4 },
+  { pattern: "correspondance", domain: "none", kind: "none", priority: 5 },
   { pattern: "correspondence", domain: "none", kind: "none", priority: 5 },
   { pattern: "organise the next month", domain: "none", kind: "none", priority: 5 },
 ];
