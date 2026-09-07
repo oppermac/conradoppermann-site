@@ -53,7 +53,7 @@ export async function buildContext(nowDate = new Date()) {
       eventsOn(now.dayKey),
       eventsOn(addDays(now.dayKey, 1)),
       lastNightSleep(now.dayKey),
-      db.select().from(whoopRecoveries).orderBy(desc(whoopRecoveries.day)).limit(1).then((r) => r[0] ?? null),
+      db.select().from(whoopRecoveries).orderBy(desc(whoopRecoveries.cycleId)).limit(1).then((r) => r[0] ?? null),
       db.select().from(whoopCycles).orderBy(desc(whoopCycles.start)).limit(2),
       db.select().from(whoopWorkouts).where(and(gte(whoopWorkouts.start, w.startAt), lte(whoopWorkouts.start, w.endAt))).orderBy(whoopWorkouts.start),
       dailyTotals(now.dayKey),

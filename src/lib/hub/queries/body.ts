@@ -16,7 +16,7 @@ export async function bodyData() {
   const window = { start: settings.sleep.bedtimeStart, end: settings.sleep.bedtimeEnd, graceMin: settings.sleep.graceMin };
 
   const [recovery, sleeps, recoveries28, cycles28, workouts, facts, meds, weights] = await Promise.all([
-    db.select().from(whoopRecoveries).orderBy(desc(whoopRecoveries.day)).limit(1).then((r) => r[0] ?? null),
+    db.select().from(whoopRecoveries).orderBy(desc(whoopRecoveries.cycleId)).limit(1).then((r) => r[0] ?? null),
     db.select().from(whoopSleeps).where(and(eq(whoopSleeps.nap, false), gte(whoopSleeps.day, since28))).orderBy(desc(whoopSleeps.end)).limit(28),
     db.select().from(whoopRecoveries).where(gte(whoopRecoveries.day, since28)).orderBy(whoopRecoveries.day),
     db.select().from(whoopCycles).where(gte(whoopCycles.day, since28)).orderBy(whoopCycles.day),

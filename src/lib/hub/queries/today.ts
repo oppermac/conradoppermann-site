@@ -58,7 +58,7 @@ export async function todayData(nowDate = new Date()) {
     db.select().from(whoopWorkouts).where(and(gte(whoopWorkouts.start, dayStart), lte(whoopWorkouts.start, dayEnd))).orderBy(whoopWorkouts.start),
     db.select().from(activities).where(and(eq(activities.day, now.dayKey), eq(activities.void, false), eq(activities.source, "manual"))).orderBy(activities.occurredAt),
     lastNightSleep(now.dayKey),
-    db.select().from(whoopRecoveries).orderBy(desc(whoopRecoveries.day)).limit(1).then((r) => r[0] ?? null),
+    db.select().from(whoopRecoveries).orderBy(desc(whoopRecoveries.cycleId)).limit(1).then((r) => r[0] ?? null),
     db.select().from(whoopCycles).orderBy(desc(whoopCycles.start)).limit(1).then((r) => r[0] ?? null),
     db.select().from(insights).where(and(eq(insights.kind, "brief"), eq(insights.forDate, now.dayKey))).orderBy(desc(insights.createdAt)).limit(1).then((r) => r[0] ?? null),
     db.select().from(insights).where(and(eq(insights.kind, "nudge"), gte(insights.forDate, addDays(now.dayKey, -1)))).orderBy(desc(insights.createdAt)).limit(5),
