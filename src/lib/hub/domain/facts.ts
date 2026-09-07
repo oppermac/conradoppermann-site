@@ -121,7 +121,10 @@ export async function weekFacts(anyDay: DayKey, settings: Settings, now = new Da
   ];
 }
 
-/** Busy intervals for the slot finder: every non-deleted, non-declined event across the read calendars. */
+/**
+ * Busy intervals for the slot finder: timed, non-declined events across the read calendars. All-day events
+ * (trips, tournaments, reminders) don't block slots, and neither do events whose title says they're cancelled.
+ */
 export async function busyIntervals(from: Date, to: Date): Promise<Array<{ start: Date; end: Date }>> {
   const rows = await db
     .select({ start: calendarEvents.start, end: calendarEvents.end })
@@ -129,9 +132,11 @@ export async function busyIntervals(from: Date, to: Date): Promise<Array<{ start
     .where(
       and(
         eq(calendarEvents.deleted, false),
+        eq(calendarEvents.allDay, false),
         gte(calendarEvents.end, from),
         lte(calendarEvents.start, to),
         or(sql`${calendarEvents.selfResponse} is null`, sql`${calendarEvents.selfResponse} <> 'declined'`),
+        sql`${calendarEvents.title} !~* '^\s*cancel+ed\b'`,
       ),
     );
   return rows;

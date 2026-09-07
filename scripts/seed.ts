@@ -42,7 +42,6 @@ const SEED_RULES: SeedRule[] = [
   { pattern: "strength", domain: "body", kind: "training" },
   { pattern: "run", domain: "body", kind: "training" },
   { pattern: "swim", domain: "body", kind: "training" },
-  { pattern: "spin", domain: "body", kind: "training" },
   { pattern: "pilates", domain: "body", kind: "training" },
   { pattern: "pt ", domain: "body", kind: "training" },
 
@@ -87,7 +86,7 @@ const SEED_RULES: SeedRule[] = [
   { pattern: "dentist", domain: "none", kind: "none", priority: 5 },
   { pattern: "doctor", domain: "none", kind: "none", priority: 5 },
   { pattern: "admin", domain: "none", kind: "none", priority: 5 },
-  { pattern: "correspondance", domain: "none", kind: "none", priority: 5 },
+  { pattern: "cancel", "correspondance", domain: "none", kind: "none", priority: 5 },
   { pattern: "correspondence", domain: "none", kind: "none", priority: 5 },
   { pattern: "organise the next month", domain: "none", kind: "none", priority: 5 },
 ];
