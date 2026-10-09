@@ -4,6 +4,9 @@
  * Bumping the version (or rotating SESSION_SECRET) signs every device out.
  */
 export const SESSION_COOKIE = "hub_session";
+
+/** HUB_OPEN=1 removes sign-in entirely (Conrad's call, 9 Oct 2026). Unset it to require the password again. */
+export const isOpenAccess = () => process.env.HUB_OPEN === "1";
 export const SESSION_DAYS = 90;
 export const RENEW_BEFORE_MS = 30 * 24 * 60 * 60 * 1000;
 const VERSION = "v1";
@@ -42,6 +45,7 @@ export async function createSessionToken(now = Date.now()): Promise<{ token: str
 }
 
 export async function verifySessionToken(token: string | undefined | null, now = Date.now()): Promise<SessionCheck> {
+  if (isOpenAccess()) return { ok: true, expiresAt: now + SESSION_DAYS * 24 * 60 * 60 * 1000 };
   const secret = process.env.SESSION_SECRET;
   if (!secret) return { ok: false, reason: "no-secret" };
   if (!token) return { ok: false, reason: "missing" };

@@ -3,6 +3,7 @@ import {
   RENEW_BEFORE_MS,
   SESSION_COOKIE,
   createSessionToken,
+  isOpenAccess,
   sessionCookieOptions,
   verifySessionToken,
 } from "@/lib/hub/auth";
@@ -48,7 +49,7 @@ export async function proxy(req: NextRequest) {
   }
 
   const res = NextResponse.next();
-  if (session.expiresAt - Date.now() < RENEW_BEFORE_MS) {
+  if (!isOpenAccess() && session.expiresAt - Date.now() < RENEW_BEFORE_MS) {
     const { token, expiresAt } = await createSessionToken();
     res.cookies.set(SESSION_COOKIE, token, sessionCookieOptions(expiresAt));
   }
