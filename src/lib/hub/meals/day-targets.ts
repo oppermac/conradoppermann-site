@@ -1,14 +1,15 @@
 /**
  * Carb cycling (Darragh's plan): a resistance-training day gets `nutrition.trainingDay` targets, every other
- * day gets the base targets. A day counts as a training day when Whoop recorded a strength/mixed session,
- * a strength session was logged by hand, or a training event is on the calendar that day (a PT session is
- * known in the morning, so the day's targets apply from breakfast).
+ * day gets the base targets. A day is a training day when it is a planned weekday in `trainingSchedule`,
+ * when it is the week's flexible weekend day (the weekend day with a session, Saturday until a Sunday
+ * session appears), or when a session is detected anyway: a Whoop strength/mixed session, a strength
+ * session logged by hand, or a training event on the calendar that day.
  */
 import { and, eq, gte, inArray, lt, lte } from "drizzle-orm";
 import { db } from "../db/client";
 import { activities, calendarEvents, whoopWorkouts, type WorkoutKind } from "../db/schema";
 import type { Settings } from "../settings";
-import { addDays, dublin, localToUtc, type DayKey } from "../time";
+import { addDays, dublin, localToUtc, weekStart, weekdayOf, type DayKey } from "../time";
 
 export type NutritionTargets = { kcal: number | null; proteinG: number | null; carbsG: number | null; fatG: number | null };
 export type DayTargets = NutritionTargets & { trainingDay: boolean; cycling: boolean };
@@ -54,8 +55,29 @@ export function targetsFor(nutrition: Settings["nutrition"], isTraining: boolean
 
 /** Targets for several days at once (dashboards, consistency counts, cups). */
 export async function resolveTargets(days: DayKey[], nutrition: Settings["nutrition"]): Promise<Map<DayKey, DayTargets>> {
-  const training = nutrition.trainingDay ? await trainingDays(days) : new Set<DayKey>();
-  return new Map(days.map((d) => [d, targetsFor(nutrition, training.has(d))]));
+  if (!nutrition.trainingDay) return new Map(days.map((d) => [d, targetsFor(nutrition, false)]));
+  const schedule = nutrition.trainingSchedule;
+  // Detection must cover whole weekends so the flexible day can be decided for every week in range.
+  const weekends = new Set<DayKey>();
+  for (const d of days) {
+    const sat = addDays(weekStart(d), 5);
+    weekends.add(sat);
+    weekends.add(addDays(sat, 1));
+  }
+  const detected = await trainingDays(Array.from(new Set([...days, ...(schedule.weekendFlex ? weekends : [])])));
+  const isTraining = (d: DayKey): boolean => {
+    if (detected.has(d)) return true;
+    const wd = weekdayOf(d);
+    if (schedule.weekdays.includes(wd)) return true;
+    if (schedule.weekendFlex && (wd === 6 || wd === 7)) {
+      const sat = addDays(weekStart(d), 5);
+      const sun = addDays(sat, 1);
+      if (detected.has(sat) || detected.has(sun)) return false; // the detected day already returned true above
+      return wd === 6; // nothing recorded yet: assume Saturday
+    }
+    return false;
+  };
+  return new Map(days.map((d) => [d, targetsFor(nutrition, isTraining(d))]));
 }
 
 export async function targetsForDay(day: DayKey, nutrition: Settings["nutrition"]): Promise<DayTargets> {

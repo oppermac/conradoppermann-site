@@ -47,6 +47,8 @@ export const SettingsSchema = z.object({
         fatG: z.number().min(0).max(300).nullable(),
       })
       .nullable(),
+    /** Planned resistance days (1 = Mon … 7 = Sun). weekendFlex = one weekend day, whichever has a session (Saturday by default). */
+    trainingSchedule: z.object({ weekdays: z.array(z.number().int().min(1).max(7)), weekendFlex: z.boolean() }),
   }),
   sleep: z.object({ bedtimeStart: hhmm, bedtimeEnd: hhmm, graceMin: z.number().int().min(0).max(60) }),
   calendars: z.object({ read: z.array(z.string()), write: z.string().nullable() }),
@@ -95,6 +97,7 @@ export const DEFAULT_SETTINGS: Settings = {
     fatPct: 0.3,
     mode: "maintain",
     trainingDay: null,
+    trainingSchedule: { weekdays: [], weekendFlex: false },
   },
   sleep: { bedtimeStart: "22:30", bedtimeEnd: "23:30", graceMin: 10 },
   calendars: {

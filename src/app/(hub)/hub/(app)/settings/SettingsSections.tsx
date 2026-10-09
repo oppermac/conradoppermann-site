@@ -225,6 +225,38 @@ export function NutritionSection({ initial, dbConnected }: { initial: Settings["
         />
         {draft.trainingDay ? (
           <>
+            <div className="px-3 py-2.5">
+              <div className="text-[15px]">Planned training days</div>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const).map((label, i) => {
+                  const wd = i + 1;
+                  const on = draft.trainingSchedule.weekdays.includes(wd);
+                  return (
+                    <button
+                      key={label}
+                      type="button"
+                      aria-pressed={on}
+                      onClick={() =>
+                        setDraft((d) => ({
+                          ...d,
+                          trainingSchedule: { ...d.trainingSchedule, weekdays: on ? d.trainingSchedule.weekdays.filter((x) => x !== wd) : [...d.trainingSchedule.weekdays, wd].sort() },
+                        }))
+                      }
+                      className={`hub-press min-h-9 rounded-full px-3 text-[13px] font-semibold ${on ? "bg-ink text-page" : "border border-hairline bg-card text-ink-2"}`}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="mt-1.5 text-[12px] text-ink-3">A session recorded on any other day counts as a training day too.</div>
+            </div>
+            <Switch
+              label="One weekend day"
+              checked={draft.trainingSchedule.weekendFlex}
+              hint="Saturday or Sunday, whichever has a session; Saturday until a Sunday session appears"
+              onChange={(v) => setDraft((d) => ({ ...d, trainingSchedule: { ...d.trainingSchedule, weekendFlex: v } }))}
+            />
             <NumberField
               label="Training-day calories"
               value={draft.trainingDay.kcal}
