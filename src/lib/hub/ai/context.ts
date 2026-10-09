@@ -11,6 +11,7 @@ import { computeGapsAndSuggestions } from "../domain/engine";
 import { lastNightSleep, weekFacts, weekWindow } from "../domain/facts";
 import { peopleDue } from "../domain/engine";
 import { dailyTotals, totalsForDays, isConsistentDay } from "../meals/store";
+import { resolveTargets } from "../meals/day-targets";
 import { readRoadmap } from "../monday/sync";
 import { getSettings } from "../settings";
 import { addDays, dayRange, dublin, localToUtc, weekKey, type DayKey } from "../time";
@@ -65,6 +66,8 @@ export async function buildContext(nowDate = new Date()) {
       peopleDue(now.dayKey),
     ]);
 
+  const dayTargets = await resolveTargets(dayRange(addDays(now.dayKey, -6), now.dayKey), settings.nutrition);
+
   const byDomain = (d: string) => facts.filter((f) => BEHAVIOUR_META[f.id].domain === d && BEHAVIOUR_META[f.id].period === "week");
   const domains = Object.fromEntries(
     (Object.keys(DOMAIN_META) as Array<keyof typeof DOMAIN_META>).map((d) => [
@@ -115,8 +118,8 @@ export async function buildContext(nowDate = new Date()) {
       .slice(0, 5)
       .map((p) => ({ name: p.name, relationship: p.relationship, daysSince: p.daysSince, cadence: p.cadenceDays })),
     meals: {
-      today: { ...mealsToday, targets: { kcal: settings.nutrition.kcal, proteinG: settings.nutrition.proteinG, carbsG: settings.nutrition.carbsG, fatG: settings.nutrition.fatG } },
-      last7: last7.map((d) => ({ day: d.day, kcal: d.kcal, protein: Math.round(d.proteinG), meals: d.meals, consistent: isConsistentDay(d, settings.nutrition) })),
+      today: { ...mealsToday, targets: dayTargets.get(now.dayKey)! },
+      last7: last7.map((d) => ({ day: d.day, kcal: d.kcal, protein: Math.round(d.proteinG), meals: d.meals, trainingDay: dayTargets.get(d.day)?.trainingDay ?? false, consistent: isConsistentDay(d, dayTargets.get(d.day)!) })),
     },
     sleepWindow: { start: settings.sleep.bedtimeStart, end: settings.sleep.bedtimeEnd },
     checkins: checks.map((c) => ({ day: c.day, bedtime: c.bedtimeLocal, bedtimeStatus: c.bedtimeStatus, mood: c.mood, energy: c.energy, gratitude: c.gratitude ? short(c.gratitude, 80) : undefined })),

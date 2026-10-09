@@ -8,6 +8,7 @@ import { lastNightSleep, weekFacts } from "../domain/facts";
 import { BEHAVIOUR_META, ragAtEnd, ringProgress, worstRag, type BehaviourFacts, type Rag } from "../domain/kpis";
 import { DOMAINS, DOMAIN_META, programmePosition, type Domain } from "../domain/programme";
 import { dailyTotals, mealsForDay, recentMeals } from "../meals/store";
+import { targetsForDay } from "../meals/day-targets";
 import { getSettings, DEFAULT_SETTINGS } from "../settings";
 import { addDays, bedtimeStatus, dublin, formatDayLong, localToUtc } from "../time";
 
@@ -116,7 +117,7 @@ export async function todayData(nowDate = new Date()) {
       strain: cycle ? { day: cycle.day, value: cycle.strain, inProgress: cycle.end === null, state: cycle.scoreState } : null,
       bedtimeWindow,
     },
-    food: { totals, targets: settings.nutrition, meals: meals.map((m) => ({ id: m.id, name: m.name, slot: m.slot, kcal: m.kcal, proteinG: m.proteinG, carbsG: m.carbsG, fatG: m.fatG, photoUrl: m.photoUrl, eatenAt: m.eatenAt.toISOString() })), recent },
+    food: { totals, targets: await targetsForDay(now.dayKey, settings.nutrition), meals: meals.map((m) => ({ id: m.id, name: m.name, slot: m.slot, kcal: m.kcal, proteinG: m.proteinG, carbsG: m.carbsG, fatG: m.fatG, photoUrl: m.photoUrl, eatenAt: m.eatenAt.toISOString() })), recent },
     nudges: nudges.map((n) => ({ id: n.id, title: n.title, body: n.bodyMd, createdAt: n.createdAt.toISOString(), readAt: n.readAt?.toISOString() ?? null })),
   };
 }

@@ -4,6 +4,7 @@ import { hasAnthropic } from "@/lib/hub/ai/anthropic";
 import { hasDb } from "@/lib/hub/db/client";
 import { requireSession } from "@/lib/hub/session";
 import { getSettings } from "@/lib/hub/settings";
+import { targetsForDay } from "@/lib/hub/meals/day-targets";
 import { dublin } from "@/lib/hub/time";
 import { parseMealText } from "@/lib/hub/meals/vision";
 import { slotForHour } from "@/lib/hub/meals/schema";
@@ -24,7 +25,7 @@ export async function POST(req: Request) {
   try {
     const result = await parseMealText(parsed.data.text, {
       timeHint: now.hhmm,
-      targets: settings ? { kcal: settings.nutrition.kcal, proteinG: settings.nutrition.proteinG } : null,
+      targets: settings ? await targetsForDay(now.dayKey, settings.nutrition) : null,
     });
     const estimate = { ...result.estimate, slot: result.estimate.slot ?? slotForHour(now.hour + now.minute / 60) };
     if (!parsed.data.autoConfirm) return NextResponse.json({ ok: true, estimate, model: result.model });

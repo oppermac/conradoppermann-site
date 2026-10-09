@@ -11,6 +11,7 @@ import { db } from "../db/client";
 import { insights } from "../db/schema";
 import { computeGapsAndSuggestions } from "../domain/engine";
 import { dailyTotals } from "../meals/store";
+import { targetsForDay } from "../meals/day-targets";
 import { notify } from "../notify/send";
 import { getSettings, type Settings } from "../settings";
 import { tokenStatus } from "../tokens";
@@ -69,17 +70,18 @@ export async function collectCandidates(now: DublinDateTime, settings: Settings)
 
   // Daily rhythms.
   const totals = await dailyTotals(now.dayKey);
+  const todayTargets = await targetsForDay(now.dayKey, settings.nutrition);
   if (now.hour === 14 && totals.meals === 0) {
     out.push({ rule: "meals_not_logged", period: now.dayKey, domain: "body", facts: "No meals logged today by 14:00.", fallbackTitle: "Lunch not logged yet", fallbackBody: "A photo is enough.", url: "/hub/food" });
   }
-  if (now.hour === 18 && settings.nutrition.proteinG && totals.proteinG < settings.nutrition.proteinG * 0.5) {
+  if (now.hour === 18 && todayTargets.proteinG && totals.proteinG < todayTargets.proteinG * 0.5) {
     out.push({
       rule: "protein_low",
       period: now.dayKey,
       domain: "body",
-      facts: `Protein so far ${Math.round(totals.proteinG)} g of ${settings.nutrition.proteinG} g target by 18:30.`,
+      facts: `Protein so far ${Math.round(totals.proteinG)} g of ${todayTargets.proteinG} g target by 18:30${todayTargets.trainingDay ? " (training day)" : ""}.`,
       fallbackTitle: "Protein is behind",
-      fallbackBody: `${Math.round(totals.proteinG)} g of ${settings.nutrition.proteinG} g so far. Dinner can close most of it.`,
+      fallbackBody: `${Math.round(totals.proteinG)} g of ${todayTargets.proteinG} g so far. Dinner can close most of it.`,
       url: "/hub/food",
     });
   }

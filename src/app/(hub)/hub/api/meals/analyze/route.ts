@@ -3,6 +3,7 @@ import { z } from "zod";
 import { hasAnthropic } from "@/lib/hub/ai/anthropic";
 import { requireSession } from "@/lib/hub/session";
 import { getSettings } from "@/lib/hub/settings";
+import { targetsForDay } from "@/lib/hub/meals/day-targets";
 import { dublin } from "@/lib/hub/time";
 import { analyzeMealPhoto } from "@/lib/hub/meals/vision";
 import { slotForHour } from "@/lib/hub/meals/schema";
@@ -23,7 +24,7 @@ export async function POST(req: Request) {
     const result = await analyzeMealPhoto(parsed.data.photoUrl, {
       hint: parsed.data.hint,
       timeHint: `${now.hhmm} on a ${["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][now.weekday]}`,
-      targets: settings ? { kcal: settings.nutrition.kcal, proteinG: settings.nutrition.proteinG } : null,
+      targets: settings ? await targetsForDay(now.dayKey, settings.nutrition) : null,
     });
     const estimate = { ...result.estimate, slot: result.estimate.slot ?? slotForHour(now.hour + now.minute / 60) };
     return NextResponse.json({ ok: true, estimate, model: result.model, raw: result.raw });

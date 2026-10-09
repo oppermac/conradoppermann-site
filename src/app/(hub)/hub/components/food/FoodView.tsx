@@ -17,6 +17,9 @@ export function FoodView({ data }: { data: Connected }) {
     <div className="grid grid-cols-1 gap-5 lg:grid-cols-12 lg:items-start">
       <div className="flex flex-col gap-5 lg:col-span-7">
         <section className="hub-card p-5">
+          {data.targets.cycling ? (
+            <div className="hub-eyebrow mb-2">{data.targets.trainingDay ? "Training day targets" : "Rest day targets"}</div>
+          ) : null}
           <KcalBar totals={data.totals} targets={data.targets} />
           <div className="mt-4">
             <MacroBars totals={data.totals} targets={data.targets} />

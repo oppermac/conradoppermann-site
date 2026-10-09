@@ -38,6 +38,15 @@ export const SettingsSchema = z.object({
     proteinPerKg: z.number().min(0.8).max(3),
     fatPct: z.number().min(0.15).max(0.45),
     mode: z.enum(["maintain", "lose", "build"]),
+    /** Carb cycling: targets for resistance-training days; null = one target every day. */
+    trainingDay: z
+      .object({
+        kcal: z.number().int().min(800).max(6000).nullable(),
+        proteinG: z.number().min(0).max(400).nullable(),
+        carbsG: z.number().min(0).max(800).nullable(),
+        fatG: z.number().min(0).max(300).nullable(),
+      })
+      .nullable(),
   }),
   sleep: z.object({ bedtimeStart: hhmm, bedtimeEnd: hhmm, graceMin: z.number().int().min(0).max(60) }),
   calendars: z.object({ read: z.array(z.string()), write: z.string().nullable() }),
@@ -85,6 +94,7 @@ export const DEFAULT_SETTINGS: Settings = {
     proteinPerKg: 1.6,
     fatPct: 0.3,
     mode: "maintain",
+    trainingDay: null,
   },
   sleep: { bedtimeStart: "22:30", bedtimeEnd: "23:30", graceMin: 10 },
   calendars: {

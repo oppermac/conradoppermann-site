@@ -212,6 +212,57 @@ export function NutritionSection({ initial, dbConnected }: { initial: Settings["
           disabled={draft.derived}
           onChange={(v) => setDraft((d) => ({ ...d, fatG: v }))}
         />
+        <Switch
+          label="Carb cycling"
+          checked={draft.trainingDay !== null}
+          hint="Different targets on resistance-training days (Whoop strength session, logged strength, or a training event in the calendar)"
+          onChange={(v) =>
+            setDraft((d) => ({
+              ...d,
+              trainingDay: v ? (d.trainingDay ?? { kcal: d.kcal, proteinG: d.proteinG, carbsG: d.carbsG, fatG: d.fatG }) : null,
+            }))
+          }
+        />
+        {draft.trainingDay ? (
+          <>
+            <NumberField
+              label="Training-day calories"
+              value={draft.trainingDay.kcal}
+              min={800}
+              max={6000}
+              step={10}
+              placeholder="kcal"
+              onChange={(v) => setDraft((d) => ({ ...d, trainingDay: { ...d.trainingDay!, kcal: v } }))}
+            />
+            <NumberField
+              label="Training-day protein"
+              value={draft.trainingDay.proteinG}
+              min={0}
+              max={400}
+              step={1}
+              placeholder="g"
+              onChange={(v) => setDraft((d) => ({ ...d, trainingDay: { ...d.trainingDay!, proteinG: v } }))}
+            />
+            <NumberField
+              label="Training-day carbs"
+              value={draft.trainingDay.carbsG}
+              min={0}
+              max={800}
+              step={1}
+              placeholder="g"
+              onChange={(v) => setDraft((d) => ({ ...d, trainingDay: { ...d.trainingDay!, carbsG: v } }))}
+            />
+            <NumberField
+              label="Training-day fat"
+              value={draft.trainingDay.fatG}
+              min={0}
+              max={300}
+              step={1}
+              placeholder="g"
+              onChange={(v) => setDraft((d) => ({ ...d, trainingDay: { ...d.trainingDay!, fatG: v } }))}
+            />
+          </>
+        ) : null}
         <NumberField
           label="Protein per kg"
           value={draft.proteinPerKg}

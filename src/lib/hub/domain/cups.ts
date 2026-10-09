@@ -6,6 +6,7 @@ import { and, eq, gte, inArray, lte, sql } from "drizzle-orm";
 import { db } from "../db/client";
 import { activities, checkins, neuroDrops, whoopSleeps } from "../db/schema";
 import { isConsistentDay, totalsForDays } from "../meals/store";
+import { resolveTargets } from "../meals/day-targets";
 import type { Settings } from "../settings";
 import { dayRange, weekKey as toWeekKey, weekRange, type WeekKey } from "../time";
 import { ACTIVITY_TYPE_BY_ID, CUPS, dropsFor, type Cup, type Drops } from "./activity-types";
@@ -55,8 +56,9 @@ export async function evaluateCupsForWeek(wk: WeekKey, settings: Settings): Prom
 
   // Consistent meal days.
   const totals = await totalsForDays(dayRange(start, end));
+  const dayTargets = await resolveTargets(dayRange(start, end), settings.nutrition);
   for (const t of totals) {
-    if (isConsistentDay(t, settings.nutrition)) {
+    if (isConsistentDay(t, dayTargets.get(t.day)!)) {
       candidates.push({ sourceType: "mealday", sourceId: t.day, typeId: "consistent_meal_day", day: t.day, at: new Date(t.day).getTime(), drops: dropsFor("consistent_meal_day", overrides) });
     }
   }

@@ -42,7 +42,7 @@ export function FoodStrip({ food }: { food: ConnectedToday["food"] }) {
   return (
     <div className="hub-card p-5">
       <div className="flex items-center justify-between">
-        <h2 className="hub-eyebrow">Food</h2>
+        <h2 className="hub-eyebrow">{targets.cycling ? (targets.trainingDay ? "Food · training day" : "Food · rest day") : "Food"}</h2>
         <Link href="/hub/food" className="hub-press text-[13px] font-semibold text-tint">
           Open
         </Link>

@@ -1,7 +1,6 @@
 import { and, desc, eq, gte, inArray, sql } from "drizzle-orm";
 import { db } from "../db/client";
 import { mealItems, meals } from "../db/schema";
-import type { Settings } from "../settings";
 import { dayKey } from "../time";
 import type { SaveMeal } from "./schema";
 
@@ -112,10 +111,10 @@ export async function totalsForDays(days: string[]): Promise<DayTotals[]> {
 }
 
 /** A consistent day: at least three meals, energy within ±10 % of target, protein ≥ 90 % of target. */
-export function isConsistentDay(t: DayTotals, nutrition: Settings["nutrition"]): boolean {
+export function isConsistentDay(t: DayTotals, targets: { kcal: number | null; proteinG: number | null }): boolean {
   if (t.meals < 3) return false;
-  if (nutrition.kcal && Math.abs(t.kcal - nutrition.kcal) > nutrition.kcal * 0.1) return false;
-  if (nutrition.proteinG && t.proteinG < nutrition.proteinG * 0.9) return false;
+  if (targets.kcal && Math.abs(t.kcal - targets.kcal) > targets.kcal * 0.1) return false;
+  if (targets.proteinG && t.proteinG < targets.proteinG * 0.9) return false;
   return true;
 }
 

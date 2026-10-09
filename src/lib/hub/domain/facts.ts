@@ -6,6 +6,7 @@ import { and, eq, gte, inArray, lt, lte, or, sql } from "drizzle-orm";
 import { db } from "../db/client";
 import { activities, calendarEvents, checkins, whoopSleeps } from "../db/schema";
 import { isConsistentDay, totalsForDays } from "../meals/store";
+import { resolveTargets } from "../meals/day-targets";
 import type { Settings } from "../settings";
 import { addDays, dayKey, dayRange, localToUtc, monthRange, weekStart, type DayKey } from "../time";
 import type { BehaviourFacts } from "./kpis";
@@ -81,7 +82,8 @@ export async function weekFacts(anyDay: DayKey, settings: Settings, now = new Da
   const todayKey = dayKey(now);
   const daysSoFar = dayRange(w.start, w.end).filter((d) => d <= todayKey);
   const totals = await totalsForDays(daysSoFar);
-  const consistentDays = totals.filter((d) => isConsistentDay(d, settings.nutrition)).length;
+  const dayTargets = await resolveTargets(daysSoFar, settings.nutrition);
+  const consistentDays = totals.filter((d) => isConsistentDay(d, dayTargets.get(d.day)!)).length;
 
   // Bedtime: nights Mon..Sun keyed by the night's start day.
   const nights = await db
