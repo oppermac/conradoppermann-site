@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, inArray, sql } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, or, sql } from "drizzle-orm";
 import { db } from "../db/client";
 import { mealItems, meals } from "../db/schema";
 import { dayKey } from "../time";
@@ -131,7 +131,8 @@ export async function recentMeals(limit = 20) {
       photoUrl: sql<string | null>`(array_agg(${meals.photoUrl} order by ${meals.eatenAt} desc))[1]`,
     })
     .from(meals)
-    .where(and(gte(meals.day, since), eq(meals.status, "confirmed")))
+    // Confirmed meals from the last 30 days, plus saved presets (status 'preset'), which never count as eaten.
+    .where(or(and(gte(meals.day, since), eq(meals.status, "confirmed")), eq(meals.status, "preset")))
     .groupBy(meals.name)
     .orderBy(desc(sql`count(*)`), desc(sql`max(${meals.eatenAt})`))
     .limit(limit);
