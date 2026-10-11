@@ -29,13 +29,13 @@ export async function executeTool(name: string, input: Record<string, unknown>):
       case "log_activity": {
         const row = await logActivity({
           typeId: String(input.type_id),
-          title: (input.title as string | null) ?? null,
+          title: ((input.title as string | null) ?? "").trim() || null,
           occurredAt: (input.occurred_at as string | null) ?? null,
           durationMin: (input.duration_min as number | null) ?? null,
           people: (input.people as string[] | null) ?? null,
           memorable: (input.memorable as boolean | null) ?? null,
           rating: (input.rating as number | null) ?? null,
-          notes: (input.notes as string | null) ?? null,
+          notes: ((input.notes as string | null) ?? "").trim() || null,
           source: "coach",
         });
         return { text: `Logged ${row.title} (${row.typeId}) on ${row.day}.`, summary: `Logged ${row.title}`, data: { activityId: row.id } };
@@ -73,7 +73,7 @@ export async function executeTool(name: string, input: Record<string, unknown>):
       }
       case "log_medication": {
         const takenAt = parseWhen((input.taken_at as string | null) ?? null);
-        const [row] = await db.insert(medicationLog).values({ takenAt, day: dayKey(takenAt), name: String(input.name), dose: (input.dose as string | null) ?? null, source: "coach" }).returning();
+        const [row] = await db.insert(medicationLog).values({ takenAt, day: dayKey(takenAt), name: String(input.name), dose: ((input.dose as string | null) ?? "").trim() || null, source: "coach" }).returning();
         return { text: `Added ${row.name}${row.dose ? ` ${row.dose}` : ""} to the medication list for ${row.day}.`, summary: `Noted ${row.name}`, data: { medicationId: row.id } };
       }
       case "create_calendar_block": {
