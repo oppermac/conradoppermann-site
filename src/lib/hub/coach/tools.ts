@@ -30,7 +30,7 @@ export const COACH_TOOLS: Anthropic.Beta.BetaTool[] = [
         duration_min: { type: ["integer", "null"] },
         people: { type: ["array", "null"], items: { type: "string" } },
         memorable: { type: ["boolean", "null"] },
-        rating: { type: ["integer", "null"], enum: [1, 2, 3, 4, 5, null] },
+        rating: { type: ["integer", "null"], minimum: 1, maximum: 5, description: "1–5, or null" },
         notes: { type: ["string", "null"] },
       },
       required: ["type_id", "title", "occurred_at", "duration_min", "people", "memorable", "rating", "notes"],
