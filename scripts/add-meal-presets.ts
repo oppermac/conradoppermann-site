@@ -10,7 +10,7 @@ type Item = { name: string; portion: string; grams: number | null; kcal: number;
 type Preset = { name: string; slot: "breakfast" | "lunch" | "dinner" | "snack"; notes: string; items: Item[] };
 
 const PRESETS: Preset[] = [
-  // Label numbers (11 Oct 2026): protein 110 kcal / 24.3 P / 0.7 C / 1.9 F per 30 g scoop; collagen 10 g scoop ≈ 9 g protein; creatine 0.
+  // Label numbers (11 Oct 2026): protein 110 kcal / 24.3 P / 0.7 C / 1.9 F per 30 g scoop; collagen counted as 0 g protein (no tryptophan, low leucine) though it is ~36 kcal; creatine 0.
   // Berries, oats and nuts are estimates until weighed. Liquid assumed water.
   {
     name: "Shake · training day",
@@ -18,7 +18,7 @@ const PRESETS: Preset[] = [
     notes: "800 ml. No nuts on training days (low-fat meal 1), extra oats for carbs.",
     items: [
       { name: "Protein powder", portion: "2 scoops (60 g)", grams: 60, kcal: 220, proteinG: 48.6, carbsG: 1.4, fatG: 3.8 },
-      { name: "Collagen", portion: "1 scoop (10 g)", grams: 10, kcal: 36, proteinG: 9, carbsG: 0, fatG: 0 },
+      { name: "Collagen (incomplete protein, not counted)", portion: "1 scoop (10 g)", grams: 10, kcal: 36, proteinG: 0, carbsG: 0, fatG: 0 },
       { name: "Creatine", portion: "1 scoop (5 g)", grams: 5, kcal: 0, proteinG: 0, carbsG: 0, fatG: 0 },
       { name: "Frozen mixed berries", portion: "350 g", grams: 350, kcal: 158, proteinG: 3, carbsG: 28, fatG: 1 },
       { name: "Gluten-free oats", portion: "big handful (60 g)", grams: 60, kcal: 225, proteinG: 7.5, carbsG: 38, fatG: 4.5 },
@@ -30,7 +30,7 @@ const PRESETS: Preset[] = [
     notes: "800 ml. Handful of nuts and seeds on rest days.",
     items: [
       { name: "Protein powder", portion: "2 scoops (60 g)", grams: 60, kcal: 220, proteinG: 48.6, carbsG: 1.4, fatG: 3.8 },
-      { name: "Collagen", portion: "1 scoop (10 g)", grams: 10, kcal: 36, proteinG: 9, carbsG: 0, fatG: 0 },
+      { name: "Collagen (incomplete protein, not counted)", portion: "1 scoop (10 g)", grams: 10, kcal: 36, proteinG: 0, carbsG: 0, fatG: 0 },
       { name: "Creatine", portion: "1 scoop (5 g)", grams: 5, kcal: 0, proteinG: 0, carbsG: 0, fatG: 0 },
       { name: "Frozen mixed berries", portion: "350 g", grams: 350, kcal: 158, proteinG: 3, carbsG: 28, fatG: 1 },
       { name: "Gluten-free oats", portion: "handful (40 g)", grams: 40, kcal: 150, proteinG: 5, carbsG: 25, fatG: 3 },
