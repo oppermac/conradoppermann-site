@@ -110,7 +110,7 @@ export function decideSession(
   let typeId: string | null = null;
   if (counts) typeId = cls.category ? "team_sport" : kind;
   else if (cls.kind === "mobility" && minutes >= 10) typeId = "mobility";
-  else if (cls.kind === "movement" && minutes >= 30) typeId = "walk";
+  else if (cls.kind === "movement" && minutes >= 20) typeId = "walk";
   else if (cls.kind === "leisure" && minutes >= 60) typeId = "nature";
   else if (cls.kind === "recovery") typeId = /sauna|ice/.test(name) ? "sauna_cold" : /massage/.test(name) ? "massage" : "meditation";
   return { effectiveKind: kind, countsAsSession: counts, typeId };
