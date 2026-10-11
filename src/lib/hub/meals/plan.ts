@@ -79,49 +79,51 @@ const SNACK_REST: PlanMeal = {
 const FRUIT_TRAINING: PlanMeal = { slot: "Fruit", name: "Fruit", items: [it("Apple", "1", 80, 0, 20, 0)] };
 const FRUIT_REST: PlanMeal = { slot: "Fruit", name: "Fruit", items: [it("Banana", "1", 105, 1, 27, 0)] };
 
-const GREENS = it("Greens (broccoli, green beans or spinach)", "200 g", 60, 5, 8, 0);
+const VEG = it("Veg, 300 g raw: e.g. 150 g broccoli + 100 g snack peppers + 50 g carrot", "", 100, 5, 20, 1);
+const FERMENT = it("Sauerkraut or vegan kimchi", "50 g, from the fridge, unpasteurised", 10, 0.5, 2, 0);
 const OIL_TSP = it("Olive oil", "1 tsp", 45, 0, 0, 5);
 
 // Training-day dinners: lean protein, big carb, little fat.
 const DINNER_STEAK_TRAINING: PlanMeal = {
   slot: "Dinner",
   name: "Steak, potatoes, greens",
-  items: [it("Sirloin steak, trimmed", "200 g raw", 330, 46, 0, 15), it("Potatoes", "500 g", 388, 10, 85, 0), GREENS, OIL_TSP],
+  items: [it("Sirloin steak, trimmed", "200 g raw", 330, 46, 0, 15), it("Potatoes", "500 g", 388, 10, 85, 0), VEG, FERMENT, OIL_TSP],
 };
 const DINNER_CHICKEN_RICE: PlanMeal = {
   slot: "Dinner",
   name: "Chicken stir-fry with rice",
   note: "Tamari (gluten-free soy), garlic, ginger, chilli.",
-  items: [it("Chicken breast", "220 g raw", 240, 50, 0, 5), it("Rice", "125 g dry", 450, 9, 98, 1), it("Stir-fry veg", "200 g", 60, 4, 10, 0), it("Sesame or olive oil", "1 tsp", 45, 0, 0, 5)],
+  items: [it("Chicken breast", "220 g raw", 240, 50, 0, 5), it("Rice", "125 g dry", 450, 9, 98, 1), it("Stir-fry veg: peppers, broccoli, carrot, onion", "300 g", 100, 5, 20, 1), FERMENT, it("Sesame or olive oil", "1 tsp", 45, 0, 0, 5)],
 };
 const DINNER_TURKEY_CHILLI: PlanMeal = {
   slot: "Dinner",
   name: "Turkey chilli with rice",
   note: "Make double on Saturday: it is Monday's lunch fallback.",
-  items: [it("Turkey mince 5%", "200 g raw", 240, 44, 0, 6), it("Kidney beans", "120 g drained", 120, 8, 20, 1), it("Tomatoes, onion, pepper", "", 80, 3, 15, 0), it("Rice", "100 g dry", 360, 7, 78, 1), OIL_TSP],
+  items: [it("Turkey mince 5%", "200 g raw", 240, 44, 0, 6), it("Kidney beans", "120 g drained", 120, 8, 20, 1), it("Tomatoes, onion, pepper", "300 g", 100, 4, 20, 0), it("Rice", "100 g dry", 360, 7, 78, 1), FERMENT, OIL_TSP],
 };
 
 // Rest-day dinners: same shape, fat from the meat, oil or avocado.
 const DINNER_THIGHS_ROAST: PlanMeal = {
   slot: "Dinner",
   name: "Roast chicken thighs and potatoes",
-  items: [it("Chicken thighs, skin off", "220 g raw", 260, 42, 0, 10), it("Potatoes, roasted", "400 g", 310, 8, 68, 0), it("Olive oil", "1 tbsp", 120, 0, 0, 14), GREENS],
+  items: [it("Chicken thighs, skin off", "220 g raw", 260, 42, 0, 10), it("Potatoes, roasted", "400 g", 310, 8, 68, 0), it("Olive oil", "1 tbsp", 120, 0, 0, 14), VEG, FERMENT],
 };
-const DINNER_MINCE_PASTA: PlanMeal = {
+const DINNER_TURKEY_RAGU: PlanMeal = {
   slot: "Dinner",
-  name: "Beef ragù with gluten-free pasta",
-  items: [it("Beef mince 10%", "200 g raw", 350, 38, 0, 22), it("Tomato sauce, onion, garlic", "", 80, 3, 15, 0), it("Gluten-free pasta", "80 g dry", 280, 6, 61, 1), OIL_TSP],
+  name: "Turkey ragù with gluten-free pasta",
+  note: "Onion, garlic, grated carrot and courgette in the sauce — hidden plants.",
+  items: [it("Turkey mince 5%", "200 g raw", 240, 44, 0, 6), it("Tomato sauce with onion, garlic, carrot, courgette", "300 g", 100, 4, 20, 0), it("Gluten-free pasta", "80 g dry", 280, 6, 61, 1), it("Olive oil", "1 tbsp", 120, 0, 0, 14), FERMENT],
 };
 const DINNER_STEAK_AVOCADO: PlanMeal = {
   slot: "Dinner",
   name: "Steak, avocado, potatoes, greens",
-  items: [it("Sirloin steak, trimmed", "200 g raw", 330, 46, 0, 15), it("Avocado", "half", 120, 1, 2, 11), it("Potatoes", "300 g", 234, 6, 51, 0), GREENS],
+  items: [it("Sirloin steak, trimmed", "200 g raw", 330, 46, 0, 15), it("Avocado", "half", 120, 1, 2, 11), it("Potatoes", "300 g", 234, 6, 51, 0), VEG, FERMENT],
 };
-const DINNER_LAMB: PlanMeal = {
+const DINNER_STEAK_ROAST_VEG: PlanMeal = {
   slot: "Dinner",
-  name: "Lamb chops, potatoes, greens",
-  note: "Sunday roast shape. Trim the fat.",
-  items: [it("Lamb loin chops, trimmed", "220 g raw", 430, 40, 0, 30), it("Potatoes", "400 g", 310, 8, 68, 0), GREENS],
+  name: "Steak with roast veg and potatoes",
+  note: "Sunday: tray of peppers, carrots, red onion and broccoli roasted in the oil.",
+  items: [it("Sirloin steak, trimmed", "200 g raw", 330, 46, 0, 15), it("Potatoes", "400 g", 310, 8, 68, 0), it("Roast veg: peppers, carrots, red onion, broccoli", "300 g", 100, 5, 20, 1), it("Olive oil", "1 tbsp", 120, 0, 0, 14), FERMENT],
 };
 
 // ---- the week --------------------------------------------------------------------------------
@@ -132,11 +134,11 @@ const rest = (dinner: PlanMeal): PlanMeal[] => [SHAKE_REST, BOWL_REST, SNACK_RES
 export const WEEK: PlanDay[] = [
   { day: "Monday", short: "Mon", kind: "rest", meals: rest(DINNER_THIGHS_ROAST) },
   { day: "Tuesday", short: "Tue", kind: "training", meals: training(DINNER_STEAK_TRAINING) },
-  { day: "Wednesday", short: "Wed", kind: "rest", meals: rest(DINNER_MINCE_PASTA) },
+  { day: "Wednesday", short: "Wed", kind: "rest", meals: rest(DINNER_TURKEY_RAGU) },
   { day: "Thursday", short: "Thu", kind: "training", meals: training(DINNER_CHICKEN_RICE) },
   { day: "Friday", short: "Fri", kind: "rest", meals: rest(DINNER_STEAK_AVOCADO) },
   { day: "Saturday", short: "Sat", kind: "training", meals: training(DINNER_TURKEY_CHILLI) },
-  { day: "Sunday", short: "Sun", kind: "rest", meals: rest(DINNER_LAMB) },
+  { day: "Sunday", short: "Sun", kind: "rest", meals: rest(DINNER_STEAK_ROAST_VEG) },
 ];
 
 export function sum(items: Macro[]): Macro {
@@ -148,10 +150,11 @@ export const dayTotal = (d: PlanDay): Macro => sum(d.meals.map(mealTotal));
 export const RULES: string[] = [
   "Protein 200 g every day. Training days (Tue, Thu, Sat) are high carb, low fat. Rest days are moderate carb, more fat.",
   "Burrito places: always a bowl. Training day = double rice, no guac. Rest day = single rice, add guac. Always double chicken, never cheese or sour cream.",
-  "Dinner is always the same shape: a hand-sized protein, potatoes or rice, greens. Bigger potato and less oil on training days.",
+  "Dinner is always the same shape: 200 g protein, potatoes or rice, 300 g veg weighed raw, a forkful of sauerkraut. Steak three nights (Tue, Fri, Sun), chicken or turkey the other four. Bigger potato and less oil on training days.",
   "Collagen is taken but not counted as protein (it has no tryptophan and little leucine).",
   "No gluten, dairy, eggs or fish anywhere in the plan. Tamari instead of soy sauce, gluten-free oats and pasta, olive oil instead of butter.",
-  "Water 2.5–3.5 L a day, more around training. Weigh the raw meat and the potatoes for the first fortnight, then eyeball.",
+  "Gut repair: aim for 30 different plants a week (every veg, fruit, bean, nut, seed, herb and spice counts), something fermented every day, cook potatoes and rice ahead and reheat for resistant starch, keep alcohol and ultra-processed food out.",
+  "Water 2.5–3.5 L a day, more around training. Weigh the raw meat, the potatoes and the veg for the first fortnight, then eyeball.",
 ];
 
 export const SHOPPING: { group: string; items: string[] }[] = [
@@ -161,7 +164,7 @@ export const SHOPPING: { group: string; items: string[] }[] = [
   },
   {
     group: "Meat",
-    items: ["Sirloin steak 3 × 200 g (Tue, Fri, plus one spare)", "Chicken breast 220 g (Thu)", "Chicken thighs, skinless 220 g (Mon)", "Beef mince 10% 200 g (Wed)", "Turkey mince 5% 400 g (Sat, make double)", "Lamb loin chops 220 g (Sun)", "Sliced chicken or turkey 300 g (snack swaps)"],
+    items: ["Sirloin steak 3 × 200 g (Tue, Fri, Sun)", "Chicken breast 220 g (Thu)", "Chicken thighs, skinless 220 g (Mon)", "Turkey mince 5% 600 g (Wed, and Sat made double)", "Sliced chicken or turkey 300 g (snack swaps)"],
   },
   {
     group: "Carbs",
@@ -169,11 +172,15 @@ export const SHOPPING: { group: string; items: string[] }[] = [
   },
   {
     group: "Fruit and veg",
-    items: ["Bananas 7", "Apples 7", "Avocados 1", "Broccoli 2 heads", "Green beans 400 g", "Spinach 400 g", "Stir-fry veg 200 g", "Onions 3, garlic, ginger, 1 chilli", "Peppers 2", "Tinned tomatoes 2", "Kidney beans 1 tin"],
+    items: ["Bananas 7", "Apples 7", "Avocados 1", "Broccoli 3 heads (~900 g)", "Snack peppers 600 g", "Carrots 500 g", "Courgette 1", "Red onions 2, onions 3, garlic, ginger, 1 chilli", "Spinach 200 g", "Tinned tomatoes 3", "Kidney beans 1 tin", "Fresh herbs: parsley, coriander"],
+  },
+  {
+    group: "Gut",
+    items: ["Sauerkraut, unpasteurised (fridge aisle) 1 jar", "Vegan kimchi 1 jar (check: no fish sauce or shrimp)", "Kombucha, a few bottles", "Coconut yoghurt with live cultures (optional, a spoon with the fruit)", "Mixed seeds: chia, flax, pumpkin"],
   },
   {
     group: "Cupboard",
-    items: ["Olive oil", "Sesame oil", "Tamari (gluten-free soy)", "Chilli powder, cumin, paprika", "Salt, pepper"],
+    items: ["Olive oil", "Sesame oil", "Tamari (gluten-free soy)", "Chilli powder, cumin, paprika, oregano, turmeric", "Salt, pepper"],
   },
   {
     group: "Lunch out",
