@@ -2,22 +2,24 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Activity, Camera, ChevronLeft, ClipboardCheck, Pill, RotateCcw, Scale, Star, Type } from "lucide-react";
+import { Activity, Camera, ChevronLeft, ClipboardCheck, MessageSquareText, Pill, RotateCcw, Scale, Star, Type } from "lucide-react";
 import type { MealEstimate } from "@/lib/hub/meals/schema";
 import { ActivityForm } from "../log/ActivityForm";
 import { CheckinForm } from "../log/CheckinForm";
 import { MedicationForm } from "../log/MedicationForm";
 import { MemorablePanel } from "../log/MemorablePanel";
+import { TellPanel } from "../log/TellPanel";
 import { MealCamera } from "../food/MealCamera";
 import { MealConfirmSheet } from "../food/MealConfirmSheet";
 import { RecentMeals } from "../food/RecentMeals";
 import { TextMealForm } from "../food/TextMealForm";
 import { Toast, type ToastState } from "./Toast";
 
-export type LogPanel = "menu" | "photo" | "repeat" | "activity" | "checkin" | "text" | "medication" | "weight" | "memorable";
+export type LogPanel = "menu" | "tell" | "photo" | "repeat" | "activity" | "checkin" | "text" | "medication" | "weight" | "memorable";
 
 const TITLES: Record<LogPanel, string> = {
   menu: "Log",
+  tell: "Tell Claude",
   photo: "Photo meal",
   repeat: "Repeat a meal",
   activity: "Activity",
@@ -80,6 +82,13 @@ export function LogSheet({ panel, setPanel, onDone, inline = false }: { panel: L
 
       {panel === "menu" ? (
         <>
+          <button type="button" onClick={() => setPanel("tell")} className="hub-press hub-elevated flex items-center gap-3 p-3.5 text-left">
+            <MessageSquareText size={22} className="shrink-0 text-tint" aria-hidden />
+            <span className="min-w-0">
+              <span className="block text-[15px] font-semibold">Tell Claude</span>
+              <span className="block truncate text-[13px] text-ink-2">Type anything — a meal last night, pints with friends, what you took</span>
+            </span>
+          </button>
           <div className="grid grid-cols-2 gap-3">
             {tile("photo", Camera, "Photo meal")}
             {tile("repeat", RotateCcw, "Repeat meal")}
@@ -102,6 +111,7 @@ export function LogSheet({ panel, setPanel, onDone, inline = false }: { panel: L
       ) : panel === "text" ? (
         <TextMealForm onEstimate={(estimate, photoUrl, model) => { setError(null); setDraft({ estimate, photoUrl, model }); }} onError={setError} />
       ) : null}
+      {panel === "tell" ? <TellPanel /> : null}
       {panel === "repeat" ? <RecentMeals /> : null}
       {panel === "activity" ? <ActivityForm /> : null}
       {panel === "checkin" ? <CheckinForm /> : null}

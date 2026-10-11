@@ -41,12 +41,14 @@ export async function executeTool(name: string, input: Record<string, unknown>):
         return { text: `Logged ${row.title} (${row.typeId}) on ${row.day}.`, summary: `Logged ${row.title}`, data: { activityId: row.id } };
       }
       case "log_meal": {
-        const now = dublin();
-        const r = await parseMealText(String(input.text), { timeHint: now.hhmm });
-        const slot = (input.slot as "breakfast" | "lunch" | "dinner" | "snack" | null) ?? r.estimate.slot ?? slotForHour(now.hour + now.minute / 60);
+        const eatenAt = parseWhen((input.eaten_at as string | null) ?? null);
+        const when = dublin(eatenAt);
+        const r = await parseMealText(String(input.text), { timeHint: when.hhmm });
+        const slot = (input.slot as "breakfast" | "lunch" | "dinner" | "snack" | null) ?? r.estimate.slot ?? slotForHour(when.hour + when.minute / 60);
         const saved = await saveMeal({
           name: r.estimate.name,
           slot,
+          eatenAt: eatenAt.toISOString(),
           source: "coach",
           items: r.estimate.items.map((it) => ({ name: it.name, portion: it.portion, grams: it.grams, kcal: it.kcal, proteinG: it.protein_g, carbsG: it.carbs_g, fatG: it.fat_g })),
           kcal: r.estimate.totals.kcal,
@@ -58,7 +60,8 @@ export async function executeTool(name: string, input: Record<string, unknown>):
           aiModel: r.model,
         });
         const totals = await dailyTotals(saved.day);
-        return { text: `Logged ${r.estimate.name}: ${r.estimate.totals.kcal} kcal, ${Math.round(r.estimate.totals.protein_g)} g protein. Today so far: ${totals.kcal} kcal, ${Math.round(totals.proteinG)} g protein over ${totals.meals} meals.`, summary: `Logged ${r.estimate.name} · ${r.estimate.totals.kcal} kcal`, data: { mealId: saved.id } };
+        const dayLabel = saved.day === dublin().dayKey ? "Today" : saved.day;
+        return { text: `Logged ${r.estimate.name} (${slot}, ${saved.day} ${when.hhmm}): ${r.estimate.totals.kcal} kcal, ${Math.round(r.estimate.totals.protein_g)} g protein. ${dayLabel} so far: ${totals.kcal} kcal, ${Math.round(totals.proteinG)} g protein over ${totals.meals} meals.`, summary: `Logged ${r.estimate.name} · ${r.estimate.totals.kcal} kcal${dayLabel === "Today" ? "" : ` · ${saved.day}`}`, data: { mealId: saved.id, day: saved.day } };
       }
       case "repeat_meal": {
         const q = String(input.query).toLowerCase();
@@ -69,9 +72,9 @@ export async function executeTool(name: string, input: Record<string, unknown>):
         return { text: `Repeated ${match.name} (${match.kcal} kcal).`, summary: `Repeated ${match.name}`, data: { mealId: saved.id } };
       }
       case "log_medication": {
-        const now = new Date();
-        const [row] = await db.insert(medicationLog).values({ takenAt: now, day: dayKey(now), name: String(input.name), dose: (input.dose as string | null) ?? null, source: "coach" }).returning();
-        return { text: `Added ${row.name}${row.dose ? ` ${row.dose}` : ""} to the medication list.`, summary: `Noted ${row.name}` };
+        const takenAt = parseWhen((input.taken_at as string | null) ?? null);
+        const [row] = await db.insert(medicationLog).values({ takenAt, day: dayKey(takenAt), name: String(input.name), dose: (input.dose as string | null) ?? null, source: "coach" }).returning();
+        return { text: `Added ${row.name}${row.dose ? ` ${row.dose}` : ""} to the medication list for ${row.day}.`, summary: `Noted ${row.name}`, data: { medicationId: row.id } };
       }
       case "create_calendar_block": {
         const start = parseWhen(String(input.start));

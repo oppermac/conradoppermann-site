@@ -39,9 +39,14 @@ export const COACH_TOOLS: Anthropic.Beta.BetaTool[] = [
   },
   {
     name: "log_meal",
-    description: "Log a meal from a description such as '2 eggs, sourdough, flat white'. The hub estimates calories and macros and saves it.",
+    description: "Log a meal or drink from a description such as '2 eggs, sourdough, flat white' or '3 pints of Guinness'. The hub estimates calories and macros and saves it. eaten_at may be an ISO time or \"YYYY-MM-DD HH:MM\" in Dublin time; null means now.",
     strict: true,
-    input_schema: { type: "object", properties: { text: { type: "string" }, slot: { type: ["string", "null"], enum: ["breakfast", "lunch", "dinner", "snack", null] } }, required: ["text", "slot"], additionalProperties: false },
+    input_schema: {
+      type: "object",
+      properties: { text: { type: "string" }, slot: { type: ["string", "null"], enum: ["breakfast", "lunch", "dinner", "snack", null] }, eaten_at: { type: ["string", "null"] } },
+      required: ["text", "slot", "eaten_at"],
+      additionalProperties: false,
+    },
   },
   {
     name: "repeat_meal",
@@ -51,9 +56,9 @@ export const COACH_TOOLS: Anthropic.Beta.BetaTool[] = [
   },
   {
     name: "log_medication",
-    description: "Add a medication entry to the plain list when Conrad says he took something.",
+    description: "Add a medication or supplement entry to the plain list when Conrad says he took something. taken_at may be an ISO time or \"YYYY-MM-DD HH:MM\" Dublin time; null means now.",
     strict: true,
-    input_schema: { type: "object", properties: { name: { type: "string" }, dose: { type: ["string", "null"] } }, required: ["name", "dose"], additionalProperties: false },
+    input_schema: { type: "object", properties: { name: { type: "string" }, dose: { type: ["string", "null"] }, taken_at: { type: ["string", "null"] } }, required: ["name", "dose", "taken_at"], additionalProperties: false },
   },
   {
     name: "create_calendar_block",
@@ -99,3 +104,6 @@ export const COACH_TOOLS: Anthropic.Beta.BetaTool[] = [
 ];
 
 export const CONFIRM_TOOLS = new Set(["create_calendar_block"]);
+
+/** Tools for the one-shot "Tell Claude" quick log: everything except calendar writes (which need confirmation). */
+export const QUICK_LOG_TOOLS = COACH_TOOLS.filter((t) => !CONFIRM_TOOLS.has(t.name));
