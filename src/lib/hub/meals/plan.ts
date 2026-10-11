@@ -123,7 +123,7 @@ const DINNER_STEAK_ROAST_VEG: PlanMeal = {
   slot: "Dinner",
   name: "Steak with roast veg and potatoes",
   note: "Sunday: tray of peppers, carrots, red onion and broccoli roasted in the oil.",
-  items: [it("Sirloin steak, trimmed", "200 g raw", 330, 46, 0, 15), it("Potatoes", "400 g", 310, 8, 68, 0), it("Roast veg: peppers, carrots, red onion, broccoli", "300 g", 100, 5, 20, 1), it("Olive oil", "1 tbsp", 120, 0, 0, 14), FERMENT],
+  items: [it("Sirloin steak, trimmed", "200 g raw", 330, 46, 0, 15), it("Potatoes", "300 g", 234, 6, 51, 0), it("Roast veg: peppers, carrots, red onion, broccoli", "300 g", 100, 5, 20, 1), it("Olive oil", "1 tbsp", 120, 0, 0, 14), FERMENT],
 };
 
 // ---- the week --------------------------------------------------------------------------------
