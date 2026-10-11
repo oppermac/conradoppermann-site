@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import {
   CalendarDays,
   CalendarRange,
+  ClipboardList,
   Flag,
   HeartPulse,
   Plus,
@@ -30,6 +31,7 @@ export const SIDEBAR_ITEMS: NavItem[] = [
   { href: "/hub/programme", label: "Programme", icon: Flag },
   { href: "/hub/body", label: "Body", icon: HeartPulse },
   { href: "/hub/food", label: "Food", icon: Utensils },
+  { href: "/hub/plan", label: "Food plan", icon: ClipboardList },
   { href: "/hub/coach", label: "Coach", icon: Sparkles },
 ];
 

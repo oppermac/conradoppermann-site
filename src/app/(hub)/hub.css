@@ -231,3 +231,53 @@ select {
   }
 }
 }
+
+/* ---------- Print (food plan) ---------- */
+@media print {
+  :root {
+    --hub-card: #ffffff;
+    --hub-chrome: #ffffff;
+  }
+  html,
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  aside,
+  nav[aria-label="Primary"],
+  .print\:hidden,
+  a[aria-label="Settings"],
+  a[aria-label="Food plan"] {
+    display: none !important;
+  }
+  #hub-page {
+    padding: 0 !important;
+  }
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  .hub-card {
+    box-shadow: none !important;
+    border: 1px solid #d0d0d4 !important;
+    border-radius: 8px !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    background: #ffffff !important;
+  }
+  .plan-day,
+  .plan-shopping {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .plan-table {
+    font-size: 12px !important;
+  }
+  .hub-title {
+    font-size: 1.5rem !important;
+  }
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+}

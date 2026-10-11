@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ClipboardList } from "lucide-react";
 import { PageHeader } from "../../components/PageHeader";
 import { NotConnected } from "../../components/NotConnected";
 import { FoodView } from "../../components/food/FoodView";
@@ -13,6 +13,9 @@ export default async function FoodPage({ searchParams }: { searchParams: Promise
   return (
     <>
       <PageHeader eyebrow={data.dbConnected ? data.label.toUpperCase() : undefined} title="Food">
+        <Link href="/hub/plan" aria-label="Food plan" className="hub-press flex h-9 w-9 items-center justify-center rounded-full bg-elevated text-ink-2">
+          <ClipboardList size={18} aria-hidden />
+        </Link>
         {data.dbConnected ? (
           <>
             <Link href={`/hub/food?day=${data.prevDay}`} aria-label="Previous day" className="hub-press flex h-9 w-9 items-center justify-center rounded-full bg-elevated text-ink-2">
