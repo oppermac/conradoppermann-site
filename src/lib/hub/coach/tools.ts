@@ -43,7 +43,7 @@ export const COACH_TOOLS: Anthropic.Beta.BetaTool[] = [
     strict: true,
     input_schema: {
       type: "object",
-      properties: { text: { type: "string" }, slot: { type: ["string", "null"], enum: ["breakfast", "lunch", "dinner", "snack", null] }, eaten_at: { type: ["string", "null"] } },
+      properties: { text: { type: "string" }, slot: { anyOf: [{ type: "string", enum: ["breakfast", "lunch", "dinner", "snack"] }, { type: "null" }] }, eaten_at: { type: ["string", "null"] } },
       required: ["text", "slot", "eaten_at"],
       additionalProperties: false,
     },
