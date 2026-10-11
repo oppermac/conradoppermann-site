@@ -323,6 +323,7 @@ export const checkins = pgTable("checkins", {
   gratitude: text("gratitude"),
   notes: text("notes"),
   weightKg: real("weight_kg"),
+  waistCm: real("waist_cm"),
   updatedAt: updatedAt(),
 });
 

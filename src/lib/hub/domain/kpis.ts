@@ -11,6 +11,7 @@ export type BehaviourId =
   | "ceo_blocks"
   | "operating_review"
   | "sessions"
+  | "recovery"
   | "meals"
   | "bedtime"
   | "friend_plans"
@@ -25,6 +26,7 @@ export const BEHAVIOUR_META: Record<
   ceo_blocks: { domain: "work", label: "CEO blocks", unit: "blocks", period: "week", scored: true },
   operating_review: { domain: "work", label: "Operating review", unit: "review", period: "week", scored: true },
   sessions: { domain: "body", label: "Training sessions", unit: "sessions", period: "week", scored: true },
+  recovery: { domain: "body", label: "Recovery sessions", unit: "sessions", period: "week", scored: true },
   meals: { domain: "body", label: "Consistent meal days", unit: "days", period: "week", scored: true },
   bedtime: { domain: "body", label: "Nights in bedtime window", unit: "nights", period: "week", scored: true },
   friend_plans: { domain: "relationships", label: "Friend plans", unit: "plans", period: "week", scored: true },
@@ -68,6 +70,8 @@ export function ragAtEnd(f: BehaviourFacts): Rag {
       if (f.done >= 3) return "amber";
       return "red";
     }
+    case "recovery":
+      return f.done >= f.target ? "green" : f.done >= 1 ? "amber" : "red";
     case "meals":
       return f.done >= 5 ? "green" : f.done >= 3 ? "amber" : "red";
     case "bedtime": {
@@ -103,6 +107,9 @@ export function riskNow(f: BehaviourFacts, weekday: number, hour: number, dayOfM
       if (weekday >= 4 && hour >= 18 && 3 - ahead > left) return "red";
       if (weekday >= 3 && hour >= 18 && ahead < 2) return "amber";
       if (weekday >= 4 && hour >= 18 && f.target - ahead > left) return "amber";
+      return "none";
+    case "recovery":
+      if (weekday >= 5 && hour >= 12 && f.target - ahead > left) return "amber";
       return "none";
     case "meals":
       if (weekday >= 5 && hour >= 12 && 5 - f.done > left + 1) return "amber";

@@ -26,6 +26,7 @@ export function CheckinForm({ weightOnly = false, onDone }: { weightOnly?: boole
   const [gratitude, setGratitude] = useState("");
   const [notes, setNotes] = useState("");
   const [weight, setWeight] = useState("");
+  const [waist, setWaist] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<ToastState>(null);
@@ -35,8 +36,8 @@ export function CheckinForm({ weightOnly = false, onDone }: { weightOnly?: boole
     setError(null);
     const day = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Dublin" }).format(new Date());
     const body = weightOnly
-      ? { weightKg: weight ? Number(weight) : null }
-      : { energy, mood, gratitude: gratitude || null, notes: notes || null, weightKg: weight ? Number(weight) : undefined };
+      ? { weightKg: weight ? Number(weight) : null, waistCm: waist ? Number(waist) : undefined }
+      : { energy, mood, gratitude: gratitude || null, notes: notes || null, weightKg: weight ? Number(weight) : undefined, waistCm: waist ? Number(waist) : undefined };
     const res = await fetch(`/hub/api/checkins/${day}`, { method: "PUT", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
     const data = (await res.json().catch(() => ({}))) as { error?: string };
     setBusy(false);
@@ -44,7 +45,7 @@ export function CheckinForm({ weightOnly = false, onDone }: { weightOnly?: boole
       setError(data.error ?? "Couldn’t save that.");
       return;
     }
-    setToast({ message: weightOnly ? "Weight saved" : "Check-in saved" });
+    setToast({ message: weightOnly ? "Weigh-in saved" : "Check-in saved" });
     router.refresh();
     onDone?.();
   }
@@ -63,8 +64,13 @@ export function CheckinForm({ weightOnly = false, onDone }: { weightOnly?: boole
         Weight (kg)
         <input type="number" inputMode="decimal" step="0.1" min={30} max={250} value={weight} onChange={(e) => setWeight(e.target.value)} className="h-11 rounded-control border border-hairline bg-card px-3 text-[17px] font-normal text-ink" />
       </label>
+      <label className="flex flex-col gap-1 text-[13px] font-semibold text-ink-2">
+        Waist (cm)
+        <span className="text-[12px] font-normal text-ink-3">At the navel, relaxed. Darragh tracks this weekly alongside weight.</span>
+        <input type="number" inputMode="decimal" step="0.5" min={40} max={200} value={waist} onChange={(e) => setWaist(e.target.value)} className="h-11 rounded-control border border-hairline bg-card px-3 text-[17px] font-normal text-ink" />
+      </label>
       {error ? <p className="text-[13px] text-bad">{error}</p> : null}
-      <button type="button" disabled={busy || (weightOnly && !weight)} onClick={save} className="hub-press h-11 rounded-full bg-ink text-[15px] font-semibold text-page disabled:opacity-50">
+      <button type="button" disabled={busy || (weightOnly && !weight && !waist)} onClick={save} className="hub-press h-11 rounded-full bg-ink text-[15px] font-semibold text-page disabled:opacity-50">
         {busy ? "Saving…" : "Save"}
       </button>
       <Toast toast={toast} onDismiss={() => setToast(null)} />

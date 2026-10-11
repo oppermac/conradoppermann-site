@@ -20,6 +20,8 @@ export const SettingsSchema = z.object({
       minSessions: z.number().int().min(0).max(14),
       cardio: z.number().int().min(0).max(14),
       strength: z.number().int().min(0).max(14),
+      /** Sauna / cold-plunge sessions a week (CMB package includes two). */
+      recovery: z.number().int().min(0).max(14),
       minSessionMin: z.number().int().min(5).max(120),
       walkCardioMin: z.number().int().min(10).max(180),
       walkCardioStrain: z.number().min(0).max(21),
@@ -81,7 +83,7 @@ export type SettingsSection = keyof Settings;
 export const DEFAULT_SETTINGS: Settings = {
   targets: {
     work: { ceoBlocks: 3, opReview: 1 },
-    body: { sessions: 4, minSessions: 3, cardio: 2, strength: 2, minSessionMin: 20, walkCardioMin: 45, walkCardioStrain: 8 },
+    body: { sessions: 3, minSessions: 3, cardio: 0, strength: 3, recovery: 2, minSessionMin: 20, walkCardioMin: 45, walkCardioStrain: 8 },
     relationships: { friendPlans: 2, familyTouch: 1 },
     aliveness: { enjoyable: 1, memorablePerMonth: 1 },
   },

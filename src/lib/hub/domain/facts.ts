@@ -114,6 +114,7 @@ export async function weekFacts(anyDay: DayKey, settings: Settings, now = new Da
       cardioTarget: t.body.cardio,
       strengthTarget: t.body.strength,
     },
+    { id: "recovery", target: t.body.recovery, done: count((a) => a.typeId === "sauna_cold"), scheduled: 0 },
     { id: "meals", target: 5, done: consistentDays, scheduled: 0 },
     { id: "bedtime", target: 5, done: nightsIn, scheduled: 0, nightsWithData },
     { id: "friend_plans", target: t.relationships.friendPlans, done: count((a) => a.typeId === "friend_plan"), scheduled: schedCount(["friend_plan"]) },

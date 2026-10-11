@@ -56,6 +56,7 @@ export async function weekData(anyDay?: DayKey, nowDate = new Date()) {
       case "ceo_blocks": return [...byType(["ceo_block"]), ...sched(["ceo_block"])];
       case "operating_review": return [...byType(["operating_review"]), ...sched(["operating_review"])];
       case "sessions": return [...byType(["cardio", "strength", "mixed", "team_sport"]), ...sched(["training"])];
+      case "recovery": return byType(["sauna_cold"]);
       case "friend_plans": return [...byType(["friend_plan"]), ...sched(["friend_plan"])];
       case "family_touchpoint": return [...byType(["family_touchpoint"]), ...sched(["family_touchpoint"])];
       case "enjoyable": return [...byType(["enjoyable", "gig", "nature", "laughter", "memorable"]), ...sched(["enjoyable", "gig", "nature", "memorable"])];

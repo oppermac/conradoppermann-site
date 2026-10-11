@@ -12,6 +12,7 @@ const Body = z.object({
   gratitude: z.string().max(300).nullable().optional(),
   notes: z.string().max(500).nullable().optional(),
   weightKg: z.number().min(30).max(250).nullable().optional(),
+  waistCm: z.number().min(40).max(200).nullable().optional(),
   bedtimeLocal: z.string().regex(/^\d{2}:\d{2}$/).nullable().optional(),
 });
 

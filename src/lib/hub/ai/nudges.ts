@@ -8,14 +8,14 @@ import { and, eq, gte, sql } from "drizzle-orm";
 import { anthropic, hasAnthropic } from "./anthropic";
 import { MODELS } from "./models";
 import { db } from "../db/client";
-import { insights } from "../db/schema";
+import { checkins, insights } from "../db/schema";
 import { computeGapsAndSuggestions } from "../domain/engine";
 import { dailyTotals } from "../meals/store";
 import { targetsForDay } from "../meals/day-targets";
 import { notify } from "../notify/send";
 import { getSettings, type Settings } from "../settings";
 import { tokenStatus } from "../tokens";
-import { minutesOfDay, weekKey, type DublinDateTime } from "../time";
+import { minutesOfDay, weekKey, weekStart, type DublinDateTime } from "../time";
 
 export type NudgeCandidate = {
   rule: string;
@@ -39,6 +39,7 @@ const RISK_LABEL: Record<string, string> = {
   ceo_blocks: "CEO blocks",
   operating_review: "operating review",
   sessions: "training",
+  recovery: "recovery sessions",
   friend_plans: "friend plans",
   family_touchpoint: "family touchpoint",
   enjoyable: "something enjoyable",
@@ -96,6 +97,13 @@ export async function collectCandidates(now: DublinDateTime, settings: Settings)
       url: "/hub/body",
       ignoreQuietHours: true,
     });
+  }
+  // Sunday weigh-in: Darragh tracks a weekly average weight and waist; prompt once if nothing was recorded this week.
+  if (now.weekday === 7 && now.hour === 9) {
+    const [w] = await db.select({ n: sql<number>`count(*)::int` }).from(checkins).where(and(gte(checkins.day, weekStart(now.dayKey)), sql`${checkins.weightKg} is not null`));
+    if (!w || w.n === 0) {
+      out.push({ rule: "weigh_in", period: wk, domain: "body", facts: "No weight logged this week. Darragh wants a weekly weight and waist measurement.", fallbackTitle: "Sunday weigh-in", fallbackBody: "Step on the scale and measure your waist, then log both.", url: "/hub/body" });
+    }
   }
   for (const provider of ["whoop", "google"] as const) {
     const s = await tokenStatus(provider).catch(() => null);

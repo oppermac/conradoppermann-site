@@ -23,6 +23,7 @@ const SLOT_FOR: Record<BehaviourId, SlotKind | null> = {
   ceo_blocks: "ceo_block",
   operating_review: "operating_review",
   sessions: "training",
+  recovery: null,
   meals: null,
   bedtime: null,
   friend_plans: "friend",
@@ -35,6 +36,7 @@ const TYPE_FOR: Record<BehaviourId, string | null> = {
   ceo_blocks: "ceo_block",
   operating_review: "operating_review",
   sessions: "cardio",
+  recovery: "sauna_cold",
   meals: null,
   bedtime: null,
   friend_plans: "friend_plan",
@@ -61,6 +63,8 @@ function needsText(f: BehaviourFacts, gap: number): string {
       return plural(gap, "more CEO blocks", "more CEO block");
     case "operating_review":
       return "an operating review";
+    case "recovery":
+      return plural(gap, "more recovery sessions (sauna or cold plunge)", "more recovery session (sauna or cold plunge)");
     case "meals":
       return plural(gap, "more consistent meal days", "more consistent meal day");
     case "bedtime":

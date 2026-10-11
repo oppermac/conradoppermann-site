@@ -85,6 +85,14 @@ export function TargetsSection({ initial, dbConnected }: { initial: Settings["ta
             onChange={(v) => setDraft((d) => ({ ...d, body: { ...d.body, strength: v } }))}
           />
           <Stepper
+            label="Recovery sessions per week"
+            hint="Sauna or cold plunge"
+            value={draft.body.recovery}
+            min={0}
+            max={14}
+            onChange={(v) => setDraft((d) => ({ ...d, body: { ...d.body, recovery: v } }))}
+          />
+          <Stepper
             label="Minimum session length"
             hint="Minutes"
             value={draft.body.minSessionMin}

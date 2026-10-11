@@ -51,7 +51,7 @@ export async function logActivity(input: LogActivityInput) {
   return row;
 }
 
-export type CheckinPatch = { mood?: number | null; energy?: number | null; gratitude?: string | null; notes?: string | null; weightKg?: number | null; bedtimeLocal?: string | null };
+export type CheckinPatch = { mood?: number | null; energy?: number | null; gratitude?: string | null; notes?: string | null; weightKg?: number | null; waistCm?: number | null; bedtimeLocal?: string | null };
 
 export async function setCheckin(day: string | null | undefined, patch: CheckinPatch) {
   const key = day ?? dublin().dayKey;
@@ -61,6 +61,7 @@ export async function setCheckin(day: string | null | undefined, patch: CheckinP
     ...(patch.gratitude !== undefined ? { gratitude: patch.gratitude } : {}),
     ...(patch.notes !== undefined ? { notes: patch.notes } : {}),
     ...(patch.weightKg !== undefined ? { weightKg: patch.weightKg } : {}),
+    ...(patch.waistCm !== undefined ? { waistCm: patch.waistCm } : {}),
     ...(patch.bedtimeLocal !== undefined ? { bedtimeLocal: patch.bedtimeLocal, bedtimeSource: "manual" as const } : {}),
     updatedAt: new Date(),
   };

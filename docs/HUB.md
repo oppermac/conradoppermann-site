@@ -43,3 +43,7 @@ Then, from this folder: `vercel env pull .env.local`, `npm run db:migrate`, `npm
 ## 5. Where things live
 
 `src/lib/hub/domain/*` — programme constants, activity/cup catalogue, KPI maths, gaps, slots, suggestions, facts, cups evaluator, nutrition targets. `src/lib/hub/whoop`, `google`, `monday`, `meals`, `notify`, `jobs`, `ai` (context, brief, review, nudges), `coach` (tools, executor, streaming loop). Pages under `src/app/(hub)/hub/(app)/*`, APIs under `src/app/(hub)/hub/api/*`, session gate in `src/proxy.ts`.
+
+## Darragh's plan in the hub (Oct 2026)
+
+Body targets follow the CMB Gym plan: 3 resistance sessions (Tue/Thu PT + weekend), 2 recovery sessions (sauna/cold plunge, activity type `sauna_cold`, KPI `recovery`), daily walks (Whoop walks ≥ 20 min). Nutrition targets are Darragh's carb-cycled numbers. Check-ins take weight and waist; a Sunday 09:00 nudge asks for both if none logged that week. The coach persona (`src/lib/hub/ai/persona.ts`) carries the plan, intolerances, supplement list and sleep protocol. The weekly food plan is `src/lib/hub/meals/plan.ts` → `/hub/plan`.
