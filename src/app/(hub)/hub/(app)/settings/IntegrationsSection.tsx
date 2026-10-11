@@ -70,7 +70,7 @@ function StatusChip({ status }: { status: ProviderStatus | null }) {
   if (status.connected) {
     return (
       <span className="inline-flex items-center gap-1 text-[13px] font-semibold text-good">
-        <CircleCheck size={14} aria-hidden /> Connected{status.externalUserId ? ` as ${status.externalUserId}` : ""}
+        <CircleCheck size={14} aria-hidden /> Connected
       </span>
     );
   }

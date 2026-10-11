@@ -54,14 +54,20 @@ function renderBodyMd(md: string): React.ReactNode[] {
   return out;
 }
 
+/** The paragraph that carries the day's one action, or the first paragraph when the brief has no such line. */
+function oneThing(md: string): string {
+  const paras = md.split("\n").map((l) => l.trim()).filter(Boolean);
+  return paras.find((p) => /^\*\*the one thing/i.test(p)) ?? paras[0] ?? "";
+}
+
 /**
- * Today's brief: headline + simple markdown body, collapsing to just the headline once read. Chips hand
- * off to the coach; when there's no brief yet, a quiet prompt writes one on demand.
+ * Today's brief: headline and the one thing to do, with the full text a tap away. Chips hand off to the
+ * coach; when there's no brief yet, a quiet prompt writes one on demand.
  */
 export function BriefCard({ brief }: { brief: Brief }) {
   const router = useRouter();
   const reduce = useReducedMotion();
-  const [expanded, setExpanded] = useState(!brief?.readAt);
+  const [expanded, setExpanded] = useState(false);
   const [writing, setWriting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const spring = reduce ? { duration: 0 } : { type: "spring" as const, visualDuration: 0.35, bounce: 0 };
@@ -110,7 +116,12 @@ export function BriefCard({ brief }: { brief: Brief }) {
       <div className="hub-eyebrow">Today’s brief</div>
       <button type="button" onClick={() => setExpanded((e) => !e)} className="hub-press mt-1 block w-full text-left">
         <h2 className="text-[19px] font-semibold leading-snug text-ink">{brief.title}</h2>
-        {!expanded ? <span className="mt-1 inline-block text-[13px] font-semibold text-tint">Read</span> : null}
+        {!expanded ? (
+          <>
+            <p className="mt-2 text-[15px] leading-snug text-ink-2">{renderInline(oneThing(brief.bodyMd), "one")}</p>
+            <span className="mt-1.5 inline-block text-[13px] font-semibold text-tint">Read the brief</span>
+          </>
+        ) : null}
       </button>
       {expanded ? (
         <motion.div layout="position" className="mt-2 space-y-2 text-[15px] leading-snug text-ink-2">

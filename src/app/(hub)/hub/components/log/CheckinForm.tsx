@@ -66,7 +66,7 @@ export function CheckinForm({ weightOnly = false, onDone }: { weightOnly?: boole
       </label>
       <label className="flex flex-col gap-1 text-[13px] font-semibold text-ink-2">
         Waist (cm)
-        <span className="text-[12px] font-normal text-ink-3">At the navel, relaxed. Darragh tracks this weekly alongside weight.</span>
+        <span className="text-[12px] font-normal text-ink-3">At the navel, relaxed.</span>
         <input type="number" inputMode="decimal" step="0.5" min={40} max={200} value={waist} onChange={(e) => setWaist(e.target.value)} className="h-11 rounded-control border border-hairline bg-card px-3 text-[17px] font-normal text-ink" />
       </label>
       {error ? <p className="text-[13px] text-bad">{error}</p> : null}

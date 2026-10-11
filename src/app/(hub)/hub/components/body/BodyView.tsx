@@ -48,7 +48,7 @@ export function BodyView({ data }: { data: Connected }) {
         <StatTile label="Recovery" value={data.recovery?.score !== null && data.recovery?.score !== undefined ? Math.round(data.recovery.score) : "—"} unit="%" accentVar="--hub-body" sub={data.recovery ? `HRV ${Math.round(data.recovery.hrv ?? 0)} ms · RHR ${Math.round(data.recovery.rhr ?? 0)}` : "Whoop hasn’t sent today yet."} />
         <StatTile label="Sleep" value={data.lastNight?.hours ? `${data.lastNight.hours}h` : "—"} sub={data.lastNight ? `${data.lastNight.performance ? `${Math.round(data.lastNight.performance)}% performance · ` : ""}bedtime ${data.lastNight.bedtime}${data.lastNight.status ? ` · ${STATUS_LABEL[data.lastNight.status]}` : ""}` : "No sleep recorded yet."} />
         <StatTile label="Strain" value={data.strain?.value !== null && data.strain?.value !== undefined ? data.strain.value.toFixed(1) : "—"} sub={data.strain?.inProgress ? "Today so far" : data.strain ? "Yesterday" : "Waiting for Whoop"} />
-        <StatTile label="Bedtime tonight" value={data.window.start} unit={`– ${data.window.end}`} sub="Your window, with 10 minutes’ grace." />
+        <StatTile label="Bedtime tonight" value={data.window.start} unit={`– ${data.window.end}`} />
       </div>
       <section className="hub-card p-5">
         <div className="flex items-center justify-between">
@@ -60,7 +60,7 @@ export function BodyView({ data }: { data: Connected }) {
             <span className="hub-tabular font-semibold">
               {s.done}/{s.target}
             </span>{" "}
-            sessions · {s.cardio} cardio of {s.cardioTarget} · {s.strength} strength of {s.strengthTarget}
+            sessions{s.strengthTarget > 0 ? ` · ${s.strength} strength of ${s.strengthTarget}` : ""}{s.cardioTarget > 0 ? ` · ${s.cardio} cardio of ${s.cardioTarget}` : ""}
             {s.scheduled ? <span className="text-ink-2"> · {s.scheduled} booked</span> : null}
           </p>
         ) : null}

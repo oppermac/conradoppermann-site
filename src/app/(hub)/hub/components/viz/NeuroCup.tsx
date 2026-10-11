@@ -6,7 +6,7 @@ import { CUP_META, type Cup } from "@/lib/hub/domain/activity-types";
 
 /**
  * A glass that fills with liquid. Level animates with a soft spring (bounce 0.15); the label and the
- * "n/10" are always visible text, and attention is an icon + "Low", never colour alone.
+ * "n/10" are always visible text, and attention is a warning glyph beside the label, never colour alone.
  */
 export function NeuroCup({
   cup,
@@ -53,15 +53,13 @@ export function NeuroCup({
       </svg>
       {showLabel ? (
         <>
-          <div className="text-[12px] font-semibold leading-none text-ink-2">{meta.short}</div>
+          <div className={`inline-flex items-center gap-0.5 text-[12px] font-semibold leading-none ${attention ? "text-warn" : "text-ink-2"}`}>
+            {attention ? <TriangleAlert size={10} aria-hidden /> : null}
+            {meta.short}
+          </div>
           <div className="hub-tabular text-[12px] leading-none text-ink-3">
             {drops}/{capacity}
           </div>
-          {attention ? (
-            <div className="mt-0.5 inline-flex items-center gap-1 rounded-full bg-warn-fill/15 px-1.5 py-0.5 text-[10px] font-semibold text-warn">
-              <TriangleAlert size={10} aria-hidden /> Low
-            </div>
-          ) : null}
         </>
       ) : null}
     </div>

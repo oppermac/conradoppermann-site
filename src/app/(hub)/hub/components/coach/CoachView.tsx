@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { CalendarDays, MessagesSquare, Sparkles } from "lucide-react";
 import type { CoachData } from "@/lib/hub/queries/coach";
-import { renderMarkdownLite } from "./markdown";
 import { SuggestedPrompts } from "./SuggestedPrompts";
 import { Thread } from "./Thread";
 import { Composer } from "./Composer";
@@ -76,10 +75,7 @@ export function CoachView({
       {brief ? (
         <>
           <h2 className="mt-1 text-[17px] font-semibold leading-snug">{brief.title}</h2>
-          <div className="mt-2 text-[15px] leading-snug text-ink-2 [&_ul]:mt-1 [&_ol]:mt-1 [&_p+p]:mt-2">
-            {renderMarkdownLite(brief.bodyMd)}
-          </div>
-          <div className="mt-3 flex items-center gap-4">
+          <div className="mt-2 flex items-center gap-4">
             <Link href={`/hub/insights/${brief.id}`} className="hub-press text-[13px] font-semibold text-tint">
               Open
             </Link>
@@ -89,7 +85,7 @@ export function CoachView({
           </div>
         </>
       ) : (
-        <p className="mt-1 text-[15px] text-ink-2">No brief yet today — ask the coach and one will be on its way.</p>
+        <p className="mt-1 text-[15px] text-ink-2">No brief yet today.</p>
       )}
     </section>
   );

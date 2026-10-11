@@ -18,7 +18,7 @@ export const BriefSchema = z.object({
 });
 export type Brief = z.infer<typeof BriefSchema>;
 
-const INSTRUCTIONS = `Write Conrad's morning brief for today from the JSON state. Three short parts, at most 200 words in body_md: (1) how he slept and recovered, with numbers; (2) the shape of the day — first event, whether a CEO block exists, anything to look forward to; (3) the one thing to do today, tied to the most at-risk behaviour or the lowest cup, naming a person or a free slot when the state offers one. top3 lists up to three concrete actions with a "when" (a time or day). watchouts are short facts, not lectures. If quietWeek is true, drop the ask and keep it to sleep, day shape and one gentle observation.`;
+const INSTRUCTIONS = `Write Conrad's morning brief for today from the JSON state. Headline under 60 characters, plain. body_md at most 110 words in three paragraphs, each opening with a bold label: **The one thing.** first — one action with a time or a person, tied to the most at-risk behaviour or the lowest cup; then **Sleep.** — one line of numbers; then **The day.** — one line on the first commitment and anything to look forward to. No preamble, no hedging, no explanations of why things matter. top3 lists up to three concrete actions with a "when" (a time or day). watchouts are short facts. If quietWeek is true, drop the ask and keep it to sleep and the day.`;
 
 export async function generateBrief(opts: { day?: string; force?: boolean } = {}) {
   const day = opts.day ?? dayKey();

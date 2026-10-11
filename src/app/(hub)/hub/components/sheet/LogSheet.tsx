@@ -86,7 +86,7 @@ export function LogSheet({ panel, setPanel, onDone, inline = false }: { panel: L
             <MessageSquareText size={22} className="shrink-0 text-tint" aria-hidden />
             <span className="min-w-0">
               <span className="block text-[15px] font-semibold">Tell Claude</span>
-              <span className="block truncate text-[13px] text-ink-2">Type anything — a meal last night, pints with friends, what you took</span>
+              <span className="block truncate text-[13px] text-ink-2">Type anything. Last night’s dinner, pints with Danny, what you took.</span>
             </span>
           </button>
           <div className="grid grid-cols-2 gap-3">

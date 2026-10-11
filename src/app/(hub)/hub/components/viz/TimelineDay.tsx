@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Moon, Utensils } from "lucide-react";
 import { dublin, weekdayOf, type DayKey } from "@/lib/hub/time";
@@ -101,15 +101,9 @@ export function TimelineDay({
 }) {
   const reduce = useReducedMotion();
   const nowLineRef = useRef<HTMLDivElement>(null);
-  const scrolledRef = useRef(false);
   const totalMin = (endHour - startHour) * 60;
   const spring = reduce ? { duration: 0 } : { type: "spring" as const, visualDuration: 0.35, bounce: 0 };
 
-  useEffect(() => {
-    if (scrolledRef.current || !nowLineRef.current) return;
-    nowLineRef.current.scrollIntoView({ block: "center" });
-    scrolledRef.current = true;
-  }, []);
 
   const allDay = items.filter((i) => i.kind === "event" && i.allDay);
   const sleep = items.find((i) => i.kind === "sleep");

@@ -49,7 +49,7 @@ export function TellPanel() {
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-[13.5px] leading-snug text-ink-2">Say what happened, in your own words. Meals, drinks, who you saw, supplements, how you feel. Claude works out the day and files it.</p>
+      <p className="text-[13.5px] leading-snug text-ink-2">Meals, drinks, who you saw, what you took. Claude files it under the right day.</p>
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}

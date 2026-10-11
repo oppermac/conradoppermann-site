@@ -87,7 +87,7 @@ function DayCard({ day }: { day: PlanDay }) {
 export default function PlanPage() {
   return (
     <>
-      <PageHeader eyebrow="DARRAGH'S TARGETS · NO GLUTEN, DAIRY, EGGS OR FISH" title="Food plan">
+      <PageHeader eyebrow="WEEKLY PLAN · DARRAGH'S TARGETS" title="Food plan">
         <PrintButton />
       </PageHeader>
 

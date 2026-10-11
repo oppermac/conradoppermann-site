@@ -156,9 +156,11 @@ export function buildSuggestions(opts: {
         break;
       }
       case "endorphins":
-      case "endocannabinoids":
-        add({ key: "training", title: "Cardio session", reason: `${cup === "endorphins" ? "Endorphins are" : "Endocannabinoids are"} low; steady cardio fills them fastest.`, slotKind: "training", typeId: "cardio", cups: [cup], gapIds: [] });
+      case "endocannabinoids": {
+        const both = lowCups.includes("endorphins") && lowCups.includes("endocannabinoids");
+        add({ key: "training", title: "Cardio session", reason: both ? "Endorphins and endocannabinoids are low; steady cardio fills both." : `${cup === "endorphins" ? "Endorphins are" : "Endocannabinoids are"} low; steady cardio fills them fastest.`, slotKind: "training", typeId: "cardio", cups: both ? ["endorphins", "endocannabinoids"] : [cup], gapIds: [] });
         break;
+      }
       case "dopamine":
         add({ key: "enjoyable", title: alivenessList[0] ?? "Book something you'll enjoy", reason: "Dopamine is low; finish a CEO block or book something you love.", slotKind: "enjoyable", typeId: "enjoyable", cups: ["dopamine"], gapIds: [] });
         break;

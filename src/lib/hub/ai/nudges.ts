@@ -122,7 +122,7 @@ async function phrase(c: NudgeCandidate): Promise<{ title: string; body: string 
     const r = await anthropic().messages.parse({
       model: MODELS.phrase,
       max_tokens: 200,
-      system: "Write a push notification for Conrad from the facts: title ≤ 40 characters, body ≤ 120 characters. Specific, warm, no exclamation marks, no guilt, name the person or slot if given, offer the action plainly.",
+      system: "Write a push notification for Conrad from the facts: title ≤ 40 characters, body one sentence ≤ 90 characters. Specific, warm, no exclamation marks, no guilt, no 'consider' or 'try to'; name the person or slot if given and state the action plainly.",
       messages: [{ role: "user", content: c.facts }],
       output_config: { format: zodOutputFormat(Phrase) },
     });
