@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Utensils } from "lucide-react";
 import { Toast, type ToastState } from "../sheet/Toast";
+import { Sheet } from "../sheet/Sheet";
+import { MealEditForm } from "./MealEditSheet";
 
 export type MealRow = {
   id: string;
@@ -26,6 +28,17 @@ function time(iso: string): string {
 export function MealList({ meals }: { meals: MealRow[] }) {
   const router = useRouter();
   const [toast, setToast] = useState<ToastState>(null);
+  const [editing, setEditing] = useState<MealRow | null>(null);
+  // Stable callbacks: the Sheet re-runs its history effect when onClose changes identity.
+  const closeEdit = useCallback(() => setEditing(null), []);
+  const savedEdit = useCallback(
+    (name: string) => {
+      setEditing(null);
+      setToast({ message: `Updated ${name}` });
+      router.refresh();
+    },
+    [router],
+  );
 
   async function repeat(m: MealRow) {
     const res = await fetch(`/hub/api/meals/${m.id}/repeat`, { method: "POST" });
@@ -66,17 +79,20 @@ export function MealList({ meals }: { meals: MealRow[] }) {
                 <Utensils size={20} aria-hidden />
               </div>
             )}
-            <div className="min-w-0 flex-1">
+            <button type="button" onClick={() => setEditing(m)} className="hub-press min-w-0 flex-1 text-left" aria-label={`Edit ${m.name}`}>
               <div className="truncate text-[15px] font-semibold">{m.name}</div>
               <div className="hub-tabular text-[13px] text-ink-2">
                 {time(m.eatenAt)} · {m.kcal} kcal · P {Math.round(m.proteinG)} C {Math.round(m.carbsG)} F {Math.round(m.fatG)}
               </div>
-            </div>
+            </button>
             <details className="relative shrink-0">
               <summary className="hub-press flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-full text-[18px] text-ink-2" aria-label={`Actions for ${m.name}`}>
                 ⋯
               </summary>
               <div className="hub-elevated absolute right-0 z-10 mt-1 flex w-40 flex-col p-1 text-[15px]">
+                <button type="button" className="hub-press rounded-control px-3 py-2 text-left" onClick={(e) => { (e.currentTarget.closest("details") as HTMLDetailsElement | null)?.removeAttribute("open"); setEditing(m); }}>
+                  Edit
+                </button>
                 <button type="button" className="hub-press rounded-control px-3 py-2 text-left" onClick={() => repeat(m)}>
                   Repeat
                 </button>
@@ -89,6 +105,10 @@ export function MealList({ meals }: { meals: MealRow[] }) {
         ))}
       </ul>
       <Toast toast={toast} onDismiss={() => setToast(null)} />
+      {/* Always mounted; only `open` toggles, so the Sheet's history effect runs on open/close rather than on mount. */}
+      <Sheet open={editing !== null} onClose={closeEdit} label="Edit meal">
+        {editing ? <MealEditForm key={editing.id} meal={editing} onClose={closeEdit} onSaved={savedEdit} /> : null}
+      </Sheet>
     </div>
   );
 }

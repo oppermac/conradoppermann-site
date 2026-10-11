@@ -1,6 +1,7 @@
 import { and, desc, eq, gte, inArray, or, sql } from "drizzle-orm";
 import { db } from "../db/client";
 import { mealItems, meals } from "../db/schema";
+import type { MealSlot } from "../db/schema";
 import { dayKey } from "../time";
 import type { SaveMeal } from "./schema";
 
@@ -124,6 +125,7 @@ export async function recentMeals(limit = 20) {
   const rows = await db
     .select({
       name: meals.name,
+      slot: sql<MealSlot>`(array_agg(${meals.slot} order by ${meals.eatenAt} desc))[1]`,
       count: sql<number>`count(*)::int`,
       lastId: sql<string>`(array_agg(${meals.id} order by ${meals.eatenAt} desc))[1]`,
       lastAt: sql<string>`max(${meals.eatenAt})`,

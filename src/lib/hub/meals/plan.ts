@@ -73,7 +73,6 @@ const FRUIT_REST: PlanMeal = { slot: "Fruit", name: "Fruit", items: [it("Banana"
 
 const VEG = it("Veg, 300 g raw: e.g. 150 g broccoli + 100 g snack peppers + 50 g carrot", "", 100, 5, 20, 1);
 const FERMENT = it("Sauerkraut or vegan kimchi", "50 g, from the fridge, unpasteurised", 10, 0.5, 2, 0);
-const OIL_TSP = it("Olive oil", "1 tsp", 45, 0, 0, 5);
 
 // Training-day dinners: lean protein, big carb, little fat.
 const DINNER_STEAK_TRAINING: PlanMeal = {
