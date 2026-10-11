@@ -50,9 +50,9 @@ const PRESETS: Preset[] = [
   {
     name: "Skyr + apple",
     slot: "snack",
-    notes: "Rest-day snack.",
+    notes: "Rest-day snack (350 g skyr to cover the collagen not being counted).",
     items: [
-      { name: "0% skyr / Greek yoghurt", portion: "250 g", grams: 250, kcal: 150, proteinG: 26, carbsG: 10, fatG: 0 },
+      { name: "0% skyr / Greek yoghurt", portion: "350 g", grams: 350, kcal: 210, proteinG: 36, carbsG: 14, fatG: 0 },
       { name: "Apple", portion: "1 medium", grams: 180, kcal: 80, proteinG: 0, carbsG: 20, fatG: 0 },
     ],
   },
