@@ -23,27 +23,20 @@ const COLLAGEN = it("Collagen", "1 scoop · 10 g (not counted as protein)", 36, 
 const CREATINE = it("Creatine", "1 scoop · 5 g", 0, 0, 0, 0);
 const BERRIES = it("Frozen mixed berries", "350 g", 158, 3, 28, 1);
 
-const SHAKE_TRAINING: PlanMeal = {
+const SHAKE: PlanMeal = {
   slot: "Breakfast",
-  name: "Shake · training day",
-  note: "800 ml with water. Extra oats, no nuts — training days are capped at 50 g fat.",
-  items: [POWDER, COLLAGEN, CREATINE, BERRIES, it("Gluten-free oats", "big handful · 60 g", 225, 7.5, 38, 4.5)],
-};
-
-const SHAKE_REST: PlanMeal = {
-  slot: "Breakfast",
-  name: "Shake · rest day",
-  note: "800 ml with water. Handful of nuts and seeds goes in on rest days.",
+  name: "Shake",
+  note: "800 ml with water. The same every day.",
   items: [POWDER, COLLAGEN, CREATINE, BERRIES, it("Gluten-free oats", "handful · 40 g", 150, 5, 25, 3), it("Nuts and seeds", "handful · 30 g", 180, 6, 5, 15)],
 };
 
 const BOWL_TRAINING: PlanMeal = {
   slot: "Lunch",
   name: "Burrito bowl · training",
-  note: "Double rice, double chicken, black beans, salsa, corn. No guac, cheese or sour cream.",
+  note: "Double rice, single chicken, black beans, salsa, corn. No guac, cheese or sour cream.",
   items: [
     it("Rice", "double", 400, 8, 88, 2),
-    it("Chicken", "double · ~220 g cooked", 350, 65, 0, 8),
+    it("Chicken", "single · ~110 g cooked", 175, 32, 0, 4),
     it("Black beans", "regular", 120, 7, 20, 1),
     it("Salsa and corn", "", 80, 2, 17, 1),
   ],
@@ -76,7 +69,6 @@ const SNACK_REST: PlanMeal = {
   items: [it("Protein powder in water", "1 scoop · 30 g", 110, 24.3, 0.7, 1.9), it("Apple", "1", 80, 0, 20, 0), it("Rice cakes", "2", 70, 1, 15, 0)],
 };
 
-const FRUIT_TRAINING: PlanMeal = { slot: "Fruit", name: "Fruit", items: [it("Apple", "1", 80, 0, 20, 0)] };
 const FRUIT_REST: PlanMeal = { slot: "Fruit", name: "Fruit", items: [it("Banana", "1", 105, 1, 27, 0)] };
 
 const VEG = it("Veg, 300 g raw: e.g. 150 g broccoli + 100 g snack peppers + 50 g carrot", "", 100, 5, 20, 1);
@@ -87,7 +79,7 @@ const OIL_TSP = it("Olive oil", "1 tsp", 45, 0, 0, 5);
 const DINNER_STEAK_TRAINING: PlanMeal = {
   slot: "Dinner",
   name: "Steak, potatoes, greens",
-  items: [it("Sirloin steak, trimmed", "200 g raw", 330, 46, 0, 15), it("Potatoes", "500 g", 388, 10, 85, 0), VEG, FERMENT, OIL_TSP],
+  items: [it("Sirloin steak, trimmed", "200 g raw", 330, 46, 0, 15), it("Potatoes", "500 g", 388, 10, 85, 0), VEG, FERMENT],
 };
 const DINNER_CHICKEN_RICE: PlanMeal = {
   slot: "Dinner",
@@ -99,7 +91,7 @@ const DINNER_TURKEY_CHILLI: PlanMeal = {
   slot: "Dinner",
   name: "Turkey chilli with rice",
   note: "Make double on Saturday: it is Monday's lunch fallback.",
-  items: [it("Turkey mince 5%", "200 g raw", 240, 44, 0, 6), it("Kidney beans", "120 g drained", 120, 8, 20, 1), it("Tomatoes, onion, pepper", "300 g", 100, 4, 20, 0), it("Rice", "100 g dry", 360, 7, 78, 1), FERMENT, OIL_TSP],
+  items: [it("Turkey mince 5%", "200 g raw", 240, 44, 0, 6), it("Kidney beans", "120 g drained", 120, 8, 20, 1), it("Tomatoes, onion, pepper", "300 g", 100, 4, 20, 0), it("Rice", "100 g dry", 360, 7, 78, 1), FERMENT],
 };
 
 // Rest-day dinners: same shape, fat from the meat, oil or avocado.
@@ -128,8 +120,9 @@ const DINNER_STEAK_ROAST_VEG: PlanMeal = {
 
 // ---- the week --------------------------------------------------------------------------------
 
-const training = (dinner: PlanMeal): PlanMeal[] => [SHAKE_TRAINING, BOWL_TRAINING, SNACK_TRAINING, dinner, FRUIT_TRAINING];
-const rest = (dinner: PlanMeal): PlanMeal[] => [SHAKE_REST, BOWL_REST, SNACK_REST, dinner, FRUIT_REST];
+const FRUIT_TRAINING: PlanMeal = { slot: "Fruit", name: "Fruit", items: [it("Banana", "1", 105, 1, 27, 0)] };
+const training = (dinner: PlanMeal): PlanMeal[] => [SHAKE, BOWL_TRAINING, SNACK_TRAINING, dinner, FRUIT_TRAINING];
+const rest = (dinner: PlanMeal): PlanMeal[] => [SHAKE, BOWL_REST, SNACK_REST, dinner, FRUIT_REST];
 
 export const WEEK: PlanDay[] = [
   { day: "Monday", short: "Mon", kind: "rest", meals: rest(DINNER_THIGHS_ROAST) },
@@ -148,8 +141,8 @@ export const mealTotal = (m: PlanMeal): Macro => sum(m.items);
 export const dayTotal = (d: PlanDay): Macro => sum(d.meals.map(mealTotal));
 
 export const RULES: string[] = [
-  "Protein 200 g every day. Training days (Tue, Thu, Sat) are high carb, low fat. Rest days are moderate carb, more fat.",
-  "Burrito places: always a bowl. Training day = double rice, no guac. Rest day = single rice, add guac. Always double chicken, never cheese or sour cream.",
+  "Protein 200 g every day. The shake is identical every day; training days (Tue, Thu, Sat) get more rice at lunch and less oil at dinner, rest days get guac and more oil.",
+  "Burrito places: always a bowl. Training day = double rice, single chicken, no guac. Rest day = single rice, double chicken, add guac. Never cheese or sour cream.",
   "Dinner is always the same shape: 200 g protein, potatoes or rice, 300 g veg weighed raw, a forkful of sauerkraut. Steak three nights (Tue, Fri, Sun), chicken or turkey the other four. Bigger potato and less oil on training days.",
   "Collagen is taken but not counted as protein (it has no tryptophan and little leucine).",
   "No gluten, dairy, eggs or fish anywhere in the plan. Tamari instead of soy sauce, gluten-free oats and pasta, olive oil instead of butter.",
@@ -160,7 +153,7 @@ export const RULES: string[] = [
 export const SHOPPING: { group: string; items: string[] }[] = [
   {
     group: "Shake (every day)",
-    items: ["Protein powder — 21 scoops this week (630 g), so a second 480 g bag", "Frozen mixed berries 2.5 kg (7 × 350 g)", "Gluten-free oats 350 g", "Nuts and seeds 120 g (4 × 30 g)", "Collagen, creatine — already have"],
+    items: ["Protein powder — 21 scoops this week (630 g), so a second 480 g bag", "Frozen mixed berries 2.5 kg (7 × 350 g)", "Gluten-free oats 350 g", "Nuts and seeds 210 g (7 × 30 g)", "Collagen, creatine — already have"],
   },
   {
     group: "Meat",
@@ -172,7 +165,7 @@ export const SHOPPING: { group: string; items: string[] }[] = [
   },
   {
     group: "Fruit and veg",
-    items: ["Bananas 7", "Apples 7", "Avocados 1", "Broccoli 3 heads (~900 g)", "Snack peppers 600 g", "Carrots 500 g", "Courgette 1", "Red onions 2, onions 3, garlic, ginger, 1 chilli", "Spinach 200 g", "Tinned tomatoes 3", "Kidney beans 1 tin", "Fresh herbs: parsley, coriander"],
+    items: ["Bananas 10", "Apples 7", "Avocados 1", "Broccoli 3 heads (~900 g)", "Snack peppers 600 g", "Carrots 500 g", "Courgette 1", "Red onions 2, onions 3, garlic, ginger, 1 chilli", "Spinach 200 g", "Tinned tomatoes 3", "Kidney beans 1 tin", "Fresh herbs: parsley, coriander"],
   },
   {
     group: "Gut",
