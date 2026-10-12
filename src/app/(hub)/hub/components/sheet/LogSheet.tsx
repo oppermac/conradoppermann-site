@@ -30,7 +30,7 @@ const TITLES: Record<LogPanel, string> = {
   memorable: "Memorable",
 };
 
-type Draft = { estimate: MealEstimate; photoUrl: string | null; model: string } | null;
+type Draft = { estimate: MealEstimate; photoUrl: string | null; photoUrls?: string[]; model: string } | null;
 
 export function LogSheet({ panel, setPanel, onDone, inline = false }: { panel: LogPanel; setPanel: (p: LogPanel) => void; onDone?: () => void; inline?: boolean }) {
   const router = useRouter();
@@ -61,9 +61,10 @@ export function LogSheet({ panel, setPanel, onDone, inline = false }: { panel: L
 
   async function reanalyse(hint: string) {
     if (!draft?.photoUrl) return;
-    const res = await fetch("/hub/api/meals/analyze", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ photoUrl: draft.photoUrl, hint }) });
+    const photoUrls = draft.photoUrls?.length ? draft.photoUrls : [draft.photoUrl];
+    const res = await fetch("/hub/api/meals/analyze", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ photoUrls, hint }) });
     const data = (await res.json().catch(() => ({}))) as { estimate?: MealEstimate; model?: string };
-    if (data.estimate) setDraft({ estimate: data.estimate, photoUrl: draft.photoUrl, model: data.model ?? draft.model });
+    if (data.estimate) setDraft({ estimate: data.estimate, photoUrl: draft.photoUrl, photoUrls, model: data.model ?? draft.model });
   }
 
   const showDraft = draft && (panel === "photo" || panel === "text");
@@ -107,7 +108,7 @@ export function LogSheet({ panel, setPanel, onDone, inline = false }: { panel: L
       {showDraft ? (
         <MealConfirmSheet estimate={draft.estimate} photoUrl={draft.photoUrl} model={draft.model} onSaved={saved} onCancel={() => setDraft(null)} onReanalyse={reanalyse} />
       ) : panel === "photo" ? (
-        <MealCamera onEstimate={(estimate, photoUrl, model) => { setError(null); setDraft({ estimate, photoUrl, model }); }} onError={setError} />
+        <MealCamera onEstimate={(estimate, photoUrls, model) => { setError(null); setDraft({ estimate, photoUrl: photoUrls[0] ?? null, photoUrls, model }); }} onError={setError} />
       ) : panel === "text" ? (
         <TextMealForm onEstimate={(estimate, photoUrl, model) => { setError(null); setDraft({ estimate, photoUrl, model }); }} onError={setError} />
       ) : null}

@@ -3,7 +3,7 @@ import { anthropic } from "../ai/anthropic";
 import { MODELS } from "../ai/models";
 import { MealEstimateSchema, type MealEstimate } from "./schema";
 
-const SYSTEM = `You estimate the nutrition of a meal for Conrad, a 30s-something man in Dublin, Ireland, from a photo or a short description. Portions are Irish/UK restaurant and home portions unless stated. Work item by item: name each food, estimate its weight in grams and its calories and macros (protein, carbs, fat in grams), then total them. Round sensibly. Be honest in the confidence fields: hidden ingredients (oils, sauces, dressings) lower confidence. Ask at most one short clarifying question, only when the answer would change the estimate by more than 20% (for example "Cream-based sauce?" with options ["Yes", "No", "Not sure"]). If the image is not food, set quality_issue to "not_food"; if it is too dark, blurry or shows only part of the plate, set the matching quality_issue and still give your best estimate. Name the meal briefly (e.g. "Chicken salad with sourdough"). Pick the slot from the time of day when given.`;
+const SYSTEM = `You estimate the nutrition of a meal for Conrad, a 30s-something man in Dublin, Ireland, from one or more photos or a short description. Several photos are the same meal (different angles, or each plate and drink of one sitting) unless Conrad says otherwise: do not count the same food twice. Portions are Irish/UK restaurant and home portions unless stated. Work item by item: name each food, estimate its weight in grams and its calories and macros (protein, carbs, fat in grams), then total them. Round sensibly. Be honest in the confidence fields: hidden ingredients (oils, sauces, dressings) lower confidence. Ask at most one short clarifying question, only when the answer would change the estimate by more than 20% (for example "Cream-based sauce?" with options ["Yes", "No", "Not sure"]). If the image is not food, set quality_issue to "not_food"; if it is too dark, blurry or shows only part of the plate, set the matching quality_issue and still give your best estimate. Name the meal briefly (e.g. "Chicken salad with sourdough"). Pick the slot from the time of day when given.`;
 
 type Ctx = { hint?: string | null; timeHint?: string | null; targets?: { kcal: number | null; proteinG: number | null } | null };
 
@@ -28,11 +28,12 @@ async function run(model: string, content: Array<{ type: "image"; source: { type
 
 export type VisionResult = { estimate: MealEstimate; model: string; raw: unknown };
 
-/** Photo → estimate. Haiku first; Sonnet when Haiku is unsure. The image block goes before the text. */
-export async function analyzeMealPhoto(photoUrl: string, ctx: Ctx = {}): Promise<VisionResult> {
+/** Photo(s) → estimate. Haiku first; Sonnet when Haiku is unsure. Image blocks go before the text. */
+export async function analyzeMealPhoto(photoUrl: string | string[], ctx: Ctx = {}): Promise<VisionResult> {
+  const urls = Array.isArray(photoUrl) ? photoUrl : [photoUrl];
   const content = [
-    { type: "image" as const, source: { type: "url" as const, url: photoUrl } },
-    { type: "text" as const, text: `Estimate this meal. ${contextText(ctx)}`.trim() },
+    ...urls.map((url) => ({ type: "image" as const, source: { type: "url" as const, url } })),
+    { type: "text" as const, text: `Estimate this meal${urls.length > 1 ? ` from these ${urls.length} photos` : ""}. ${contextText(ctx)}`.trim() },
   ];
   const first = await run(MODELS.vision, content);
   if (first.estimate && first.estimate.confidence >= 0.5 && first.estimate.quality_issue !== "not_food") {

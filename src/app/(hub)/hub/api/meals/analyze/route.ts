@@ -10,18 +10,20 @@ import { slotForHour } from "@/lib/hub/meals/schema";
 
 export const maxDuration = 60;
 
-const Body = z.object({ photoUrl: z.string().url(), hint: z.string().max(300).optional() });
+const Body = z
+  .object({ photoUrl: z.string().url().optional(), photoUrls: z.array(z.string().url()).min(1).max(6).optional(), hint: z.string().max(500).optional() })
+  .refine((b) => b.photoUrl || b.photoUrls?.length, { message: "photoUrl or photoUrls is required" });
 
 export async function POST(req: Request) {
   const denied = await requireSession();
   if (denied) return denied;
   if (!hasAnthropic()) return NextResponse.json({ error: "ANTHROPIC_API_KEY is not set" }, { status: 503 });
   const parsed = Body.safeParse(await req.json().catch(() => null));
-  if (!parsed.success) return NextResponse.json({ error: "photoUrl is required" }, { status: 400 });
+  if (!parsed.success) return NextResponse.json({ error: "photoUrls is required" }, { status: 400 });
   const { settings } = await getSettings().catch(() => ({ settings: null }));
   const now = dublin();
   try {
-    const result = await analyzeMealPhoto(parsed.data.photoUrl, {
+    const result = await analyzeMealPhoto(parsed.data.photoUrls ?? [parsed.data.photoUrl as string], {
       hint: parsed.data.hint,
       timeHint: `${now.hhmm} on a ${["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][now.weekday]}`,
       targets: settings ? await targetsForDay(now.dayKey, settings.nutrition) : null,
