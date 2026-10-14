@@ -2,24 +2,26 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Activity, Camera, ChevronLeft, ClipboardCheck, MessageSquareText, Pill, RotateCcw, Scale, Star, Type } from "lucide-react";
+import { Activity, Camera, ChefHat, ChevronLeft, ClipboardCheck, MessageSquareText, Pill, RotateCcw, Scale, Star, Type } from "lucide-react";
 import type { MealEstimate } from "@/lib/hub/meals/schema";
 import { ActivityForm } from "../log/ActivityForm";
 import { CheckinForm } from "../log/CheckinForm";
 import { MedicationForm } from "../log/MedicationForm";
 import { MemorablePanel } from "../log/MemorablePanel";
 import { TellPanel } from "../log/TellPanel";
+import { EatPanel } from "../log/EatPanel";
 import { MealCamera } from "../food/MealCamera";
 import { MealConfirmSheet } from "../food/MealConfirmSheet";
 import { RecentMeals } from "../food/RecentMeals";
 import { TextMealForm } from "../food/TextMealForm";
 import { Toast, type ToastState } from "./Toast";
 
-export type LogPanel = "menu" | "tell" | "photo" | "repeat" | "activity" | "checkin" | "text" | "medication" | "weight" | "memorable";
+export type LogPanel = "menu" | "tell" | "eat" | "photo" | "repeat" | "activity" | "checkin" | "text" | "medication" | "weight" | "memorable";
 
 const TITLES: Record<LogPanel, string> = {
   menu: "Log",
   tell: "Tell Claude",
+  eat: "What should I eat?",
   photo: "Photo meal",
   repeat: "Repeat a meal",
   activity: "Activity",
@@ -97,6 +99,7 @@ export function LogSheet({ panel, setPanel, onDone, inline = false }: { panel: L
             {tile("checkin", ClipboardCheck, "Check-in")}
           </div>
           <div className="flex flex-wrap gap-2">
+            {chip("eat", ChefHat, "What should I eat?")}
             {chip("text", Type, "Text meal")}
             {chip("medication", Pill, "Medication")}
             {chip("weight", Scale, "Weight")}
@@ -113,6 +116,7 @@ export function LogSheet({ panel, setPanel, onDone, inline = false }: { panel: L
         <TextMealForm onEstimate={(estimate, photoUrl, model) => { setError(null); setDraft({ estimate, photoUrl, model }); }} onError={setError} />
       ) : null}
       {panel === "tell" ? <TellPanel /> : null}
+      {panel === "eat" ? <EatPanel /> : null}
       {panel === "repeat" ? <RecentMeals /> : null}
       {panel === "activity" ? <ActivityForm /> : null}
       {panel === "checkin" ? <CheckinForm /> : null}
