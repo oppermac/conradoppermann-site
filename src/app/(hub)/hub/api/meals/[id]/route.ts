@@ -4,6 +4,7 @@ import { db, hasDb } from "@/lib/hub/db/client";
 import { mealItems, meals } from "@/lib/hub/db/schema";
 import { requireSession } from "@/lib/hub/session";
 import { SaveMealSchema } from "@/lib/hub/meals/schema";
+import { dayKey } from "@/lib/hub/time";
 
 export async function PATCH(req: Request, ctx: RouteContext<"/hub/api/meals/[id]">) {
   const denied = await requireSession();
@@ -20,7 +21,7 @@ export async function PATCH(req: Request, ctx: RouteContext<"/hub/api/meals/[id]
     .set({
       ...(p.name !== undefined ? { name: p.name } : {}),
       ...(p.slot !== undefined ? { slot: p.slot } : {}),
-      ...(p.eatenAt !== undefined ? { eatenAt: new Date(p.eatenAt) } : {}),
+      ...(p.eatenAt !== undefined ? { eatenAt: new Date(p.eatenAt), day: dayKey(new Date(p.eatenAt)) } : {}),
       ...(p.kcal !== undefined ? { kcal: Math.round(p.kcal) } : {}),
       ...(p.proteinG !== undefined ? { proteinG: p.proteinG } : {}),
       ...(p.carbsG !== undefined ? { carbsG: p.carbsG } : {}),
