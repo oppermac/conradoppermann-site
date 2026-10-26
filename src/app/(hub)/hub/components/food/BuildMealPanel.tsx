@@ -33,7 +33,7 @@ export function BuildMealPanel({ onSaved }: { onSaved?: () => void }) {
       slot,
       source: "text",
       items: items.map(({ foodId: _f, ...it }) => it),
-      foodIds: items.map((i) => i.foodId),
+      foodIds: items.map((i) => i.foodId).filter(Boolean),
       kcal: Math.round(totals.kcal),
       proteinG: totals.proteinG,
       carbsG: totals.carbsG,

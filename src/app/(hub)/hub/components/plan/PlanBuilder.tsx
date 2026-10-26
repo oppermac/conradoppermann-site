@@ -13,7 +13,7 @@ const SLOTS: Slot[] = ["breakfast", "lunch", "snack", "dinner"];
 const SLOT_LABEL: Record<Slot, string> = { breakfast: "Breakfast", lunch: "Lunch", snack: "Snack", dinner: "Dinner" };
 const r = (n: number) => Math.round(n).toLocaleString("en-GB");
 const sum = (items: PlanItem[]): Macro => items.reduce((a, i) => ({ kcal: a.kcal + i.kcal, proteinG: a.proteinG + i.proteinG, carbsG: a.carbsG + i.carbsG, fatG: a.fatG + i.fatG }), { kcal: 0, proteinG: 0, carbsG: 0, fatG: 0 });
-const toPlanItem = (p: PickedItem): PlanItem => ({ foodId: p.foodId, name: p.name, portion: p.portion, grams: p.grams, kcal: p.kcal, proteinG: p.proteinG, carbsG: p.carbsG, fatG: p.fatG });
+const toPlanItem = (p: PickedItem): PlanItem => ({ foodId: p.foodId || null, name: p.name, portion: p.portion, grams: p.grams, kcal: p.kcal, proteinG: p.proteinG, carbsG: p.carbsG, fatG: p.fatG });
 
 function MacroLine({ m, dim }: { m: Macro; dim?: boolean }) {
   return (
