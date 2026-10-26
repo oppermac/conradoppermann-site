@@ -61,6 +61,7 @@ const FOODS: F[] = [
   { name: "Honey", brand: "Tesco", kcal: 331, p: 0.3, c: 82.4, f: 0, qty: 20, source: L, tags: ["condiment", "sugar"] },
   // --- snacks, fruit, drinks ---
   { name: "Plant Protein Red Berries", brand: "Alpro", basis: "perUnit", unitLabel: "pot", unitGrams: 200, kcal: 164, p: 15, c: 14, f: 4.6, fibre: 2.2, qty: 1, source: L, tags: ["snack", "protein", "dairy-free"], notes: "Per 100 g: 82 kcal, 7.5 g protein; pot size inferred from 15 g protein per pack. Soya, vegan." },
+  { name: "Bigger Bite Popcorn, honey and sea salt", brand: "Keogh's", basis: "perUnit", unitLabel: "bag", unitGrams: 90, kcal: 355, p: 1.5, c: 46.8, f: 15.1, fibre: 5.7, qty: 1, source: L, tags: ["snack"], notes: "Label per 100 g: 394 kcal, 16.8 F, 52 C (6 sugars), 6.3 fibre, 1.7 P. 118 kcal per 30 g serving, 3 per bag. Gluten free." },
   { name: "Dairy Milk chocolate", brand: "Cadbury", basis: "perUnit", unitLabel: "square", unitGrams: 6, kcal: 32, p: 0.4, c: 3.4, f: 1.8, qty: 5, source: E, tags: ["snack", "sweet"], notes: "Dairy." },
   { name: "Banana", basis: "perUnit", unitLabel: "banana", unitGrams: 120, kcal: 105, p: 1.3, c: 27, f: 0.4, fibre: 3, qty: 1, source: E, tags: ["fruit"] },
   { name: "Apple", basis: "perUnit", unitLabel: "apple", unitGrams: 180, kcal: 80, p: 0.4, c: 21, f: 0.3, fibre: 4, qty: 1, source: E, tags: ["fruit"] },
