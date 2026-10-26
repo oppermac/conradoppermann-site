@@ -18,7 +18,7 @@ export type FoodRow = {
   source: string;
 };
 
-export type PickedItem = { foodId: string; name: string; portion: string; grams: number | null; kcal: number; proteinG: number; carbsG: number; fatG: number };
+export type PickedItem = { foodId: string; name: string; portion: string; grams: number | null; kcal: number; proteinG: number; carbsG: number; fatG: number; qty: number; basis: "per100g" | "perUnit"; unitLabel: string | null; unitGrams: number | null; base: { kcal: number; proteinG: number; carbsG: number; fatG: number } };
 
 /** Mirrors foodToItem on the server so the picker can show live numbers without a round trip. */
 export function itemFor(food: FoodRow, qty: number): PickedItem {
@@ -27,13 +27,13 @@ export function itemFor(food: FoodRow, qty: number): PickedItem {
   const unit = food.unitLabel ?? "unit";
   const portion = food.basis === "perUnit" ? `${qty % 1 === 0 ? qty : qty.toFixed(1)} ${unit}${qty === 1 ? "" : "s"}${grams ? ` · ${Math.round(grams)} g` : ""}` : `${Math.round(qty)} g`;
   const r1 = (n: number) => Math.round(n * 10) / 10;
-  return { foodId: food.id, name: food.brand ? `${food.name} (${food.brand})` : food.name, portion, grams, kcal: Math.round(food.kcal * factor), proteinG: r1(food.proteinG * factor), carbsG: r1(food.carbsG * factor), fatG: r1(food.fatG * factor) };
+  return { foodId: food.id, name: food.brand ? `${food.name} (${food.brand})` : food.name, portion, grams, kcal: Math.round(food.kcal * factor), proteinG: r1(food.proteinG * factor), carbsG: r1(food.carbsG * factor), fatG: r1(food.fatG * factor), qty, basis: food.basis, unitLabel: food.unitLabel, unitGrams: food.unitGrams, base: { kcal: food.kcal, proteinG: food.proteinG, carbsG: food.carbsG, fatG: food.fatG } };
 }
 
 const QUICK: Record<"per100g" | "perUnit", number[]> = { per100g: [50, 100, 150, 200, 250], perUnit: [0.5, 1, 1.5, 2, 3] };
 
 /** Pan-frying leaves roughly a teaspoon of oil on the food. Logged as its own line so it stays visible and editable. */
-const FRYING_OIL: PickedItem = { foodId: "", name: "Olive oil, for frying", portion: "1 tsp · 5 g", grams: 5, kcal: 44, proteinG: 0, carbsG: 0, fatG: 5 };
+const FRYING_OIL: PickedItem = { foodId: "", name: "Olive oil, for frying", portion: "1 tsp · 5 g", grams: 5, kcal: 44, proteinG: 0, carbsG: 0, fatG: 5, qty: 1, basis: "perUnit", unitLabel: "tsp", unitGrams: 5, base: { kcal: 44, proteinG: 0, carbsG: 0, fatG: 5 } };
 const FRYABLE = /chicken|steak|beef|turkey|burger|bacon|mince|lamb|pork|egg|onion|pepper|mushroom|potato|rice|prawn/i;
 
 /**

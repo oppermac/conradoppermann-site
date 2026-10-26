@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { Copy, Pencil, Plus, Printer, Trash2, X } from "lucide-react";
+import { Copy, Minus, Pencil, Plus, Printer, Trash2, X } from "lucide-react";
 import type { PlanData, PlanDay, PlanEntry, SetMeal, Macro } from "@/lib/hub/meals/plan-store";
 import type { PlanItem } from "@/lib/hub/db/schema";
 import { Sheet } from "../sheet/Sheet";
@@ -13,7 +13,19 @@ const SLOTS: Slot[] = ["breakfast", "lunch", "snack", "dinner"];
 const SLOT_LABEL: Record<Slot, string> = { breakfast: "Breakfast", lunch: "Lunch", snack: "Snack", dinner: "Dinner" };
 const r = (n: number) => Math.round(n).toLocaleString("en-GB");
 const sum = (items: PlanItem[]): Macro => items.reduce((a, i) => ({ kcal: a.kcal + i.kcal, proteinG: a.proteinG + i.proteinG, carbsG: a.carbsG + i.carbsG, fatG: a.fatG + i.fatG }), { kcal: 0, proteinG: 0, carbsG: 0, fatG: 0 });
-const toPlanItem = (p: PickedItem): PlanItem => ({ foodId: p.foodId || null, name: p.name, portion: p.portion, grams: p.grams, kcal: p.kcal, proteinG: p.proteinG, carbsG: p.carbsG, fatG: p.fatG });
+const toPlanItem = (p: PickedItem): PlanItem => ({ foodId: p.foodId || null, name: p.name, portion: p.portion, grams: p.grams, kcal: p.kcal, proteinG: p.proteinG, carbsG: p.carbsG, fatG: p.fatG, qty: p.qty, basis: p.basis, unitLabel: p.unitLabel, unitGrams: p.unitGrams, base: p.base });
+const shortName = (n: string) => n.replace(/\s*\(.*\)$/, "");
+
+/** Re-size a row that knows its basis: macros scale from `base`, portion text and grams follow. */
+function resized(it: PlanItem, qty: number): PlanItem {
+  if (!it.base || !it.basis) return it;
+  const factor = it.basis === "perUnit" ? qty : qty / 100;
+  const grams = it.basis === "perUnit" ? (it.unitGrams ? it.unitGrams * qty : null) : qty;
+  const unit = it.unitLabel ?? "unit";
+  const portion = it.basis === "perUnit" ? `${qty % 1 === 0 ? qty : qty.toFixed(1)} ${unit}${qty === 1 ? "" : "s"}${grams ? ` · ${Math.round(grams)} g` : ""}` : `${Math.round(qty)} g`;
+  const r1 = (n: number) => Math.round(n * 10) / 10;
+  return { ...it, qty, grams, portion, kcal: Math.round(it.base.kcal * factor), proteinG: r1(it.base.proteinG * factor), carbsG: r1(it.base.carbsG * factor), fatG: r1(it.base.fatG * factor) };
+}
 
 function MacroLine({ m, dim }: { m: Macro; dim?: boolean }) {
   return (
@@ -41,13 +53,24 @@ function ItemComposer({ items, onChange }: { items: PlanItem[]; onChange: (items
       {items.length > 0 ? (
         <ul className="divide-y divide-hairline">
           {items.map((it, i) => (
-            <li key={i} className="flex items-center justify-between gap-3 py-2">
-              <div className="min-w-0">
+            <li key={i} className="flex items-center justify-between gap-2 py-2">
+              <div className="min-w-0 flex-1">
                 <div className="truncate text-[15px] font-medium">{it.name}</div>
                 <div className="hub-tabular text-[12.5px] text-ink-3">{it.portion ?? ""} · {r(it.kcal)} kcal · P {r(it.proteinG)} C {r(it.carbsG)} F {r(it.fatG)}</div>
               </div>
-              <button type="button" onClick={() => onChange(items.filter((_, j) => j !== i))} aria-label={`Remove ${it.name}`} className="hub-press flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-ink-3">
-                <Trash2 size={16} aria-hidden />
+              {it.base && it.basis && it.qty != null ? (
+                <div className="flex shrink-0 items-center gap-1">
+                  <button type="button" onClick={() => onChange(items.map((x, j) => (j === i ? resized(x, Math.max(it.basis === "perUnit" ? 0.5 : 25, (it.qty ?? 0) - (it.basis === "perUnit" ? 0.5 : 25))) : x)))} aria-label={`Less ${it.name}`} className="hub-press flex h-8 w-8 items-center justify-center rounded-full border border-hairline text-ink-2">
+                    <Minus size={14} aria-hidden />
+                  </button>
+                  <span className="hub-tabular w-9 text-center text-[13px] font-semibold">{it.basis === "perUnit" ? it.qty : Math.round(it.qty)}</span>
+                  <button type="button" onClick={() => onChange(items.map((x, j) => (j === i ? resized(x, (it.qty ?? 0) + (it.basis === "perUnit" ? 0.5 : 25)) : x)))} aria-label={`More ${it.name}`} className="hub-press flex h-8 w-8 items-center justify-center rounded-full border border-hairline text-ink-2">
+                    <Plus size={14} aria-hidden />
+                  </button>
+                </div>
+              ) : null}
+              <button type="button" onClick={() => onChange(items.filter((_, j) => j !== i))} aria-label={`Remove ${it.name}`} className="hub-press flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-ink-3">
+                <Trash2 size={15} aria-hidden />
               </button>
             </li>
           ))}
@@ -77,7 +100,7 @@ function ItemComposer({ items, onChange }: { items: PlanItem[]; onChange: (items
 }
 
 type AddTarget = { weekday: number; slot: Slot } | null;
-type EditMeal = { id: string | null; name: string; slot: Slot; items: PlanItem[] } | null;
+type EditMeal = { id: string | null; entryId?: string | null; name: string; slot: Slot; items: PlanItem[] } | null;
 
 export function PlanBuilder({ initial }: { initial: PlanData }) {
   const [data, setData] = useState<PlanData>(initial);
@@ -154,7 +177,8 @@ export function PlanBuilder({ initial }: { initial: PlanData }) {
     setBusy(true);
     const body = { name: edit.name.trim() || "Set meal", slot: edit.slot, items: edit.items };
     try {
-      if (edit.id) await post(`/hub/api/plan/meals/${edit.id}`, "PATCH", body);
+      if (edit.entryId) await post(`/hub/api/plan/entries/${edit.entryId}`, "PATCH", { name: body.name, items: body.items });
+      else if (edit.id) await post(`/hub/api/plan/meals/${edit.id}`, "PATCH", body);
       else await post("/hub/api/plan/meals", "POST", body);
       await refresh();
       setEdit(null);
@@ -242,15 +266,32 @@ export function PlanBuilder({ initial }: { initial: PlanData }) {
                     ) : (
                       <ul className="divide-y divide-hairline">
                         {entries.map((e) => (
-                          <li key={e.id} className="flex items-start justify-between gap-2 py-1.5">
-                            <div className="min-w-0">
-                              <div className="text-[14.5px] font-semibold leading-snug">{e.name}</div>
-                              <div className="truncate text-[12px] text-ink-3">{e.items.map((i) => `${i.name.replace(/\s*\(.*\)$/, "")}${i.portion ? ` ${i.portion}` : ""}`).join(" · ")}</div>
-                              <MacroLine m={e.totals} />
+                          <li key={e.id} className="py-2">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="min-w-0">
+                                <div className="text-[14.5px] font-semibold leading-snug">
+                                  {e.name}
+                                  {!e.planMealId ? <span className="ml-1.5 text-[11px] font-medium uppercase tracking-[0.06em] text-ink-3">custom</span> : null}
+                                </div>
+                                <MacroLine m={e.totals} />
+                              </div>
+                              <div className="print:hidden flex shrink-0 items-center">
+                                <button type="button" onClick={() => setEdit({ id: e.planMealId, entryId: e.id, name: e.name, slot: e.slot, items: e.items })} aria-label={`Edit ${e.name} for ${day.label}`} className="hub-press flex h-8 w-8 items-center justify-center rounded-full text-ink-3">
+                                  <Pencil size={14} aria-hidden />
+                                </button>
+                                <button type="button" onClick={() => removeEntry(e)} aria-label={`Remove ${e.name}`} className="hub-press flex h-8 w-8 items-center justify-center rounded-full text-ink-3">
+                                  <X size={15} aria-hidden />
+                                </button>
+                              </div>
                             </div>
-                            <button type="button" onClick={() => removeEntry(e)} aria-label={`Remove ${e.name}`} className="hub-press print:hidden flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-ink-3">
-                              <X size={15} aria-hidden />
-                            </button>
+                            <ul className="mt-1 flex flex-col gap-0.5">
+                              {e.items.map((i, k) => (
+                                <li key={k} className="flex items-baseline justify-between gap-3 text-[12.5px]">
+                                  <span className="min-w-0 truncate text-ink-2">{shortName(i.name)}{i.portion ? <span className="text-ink-3"> · {i.portion}</span> : null}</span>
+                                  <span className="hub-tabular shrink-0 text-ink-3">{r(i.kcal)} · {r(i.proteinG)} · {r(i.carbsG)} · {r(i.fatG)}</span>
+                                </li>
+                              ))}
+                            </ul>
                           </li>
                         ))}
                       </ul>
@@ -285,7 +326,7 @@ export function PlanBuilder({ initial }: { initial: PlanData }) {
             <li key={sm.id} className="flex items-center justify-between gap-3 py-2.5">
               <div className="min-w-0">
                 <div className="text-[15px] font-semibold">{sm.name} <span className="text-[12px] font-normal uppercase tracking-[0.06em] text-ink-3">{SLOT_LABEL[sm.slot]}</span></div>
-                <div className="truncate text-[12px] text-ink-3">{sm.items.map((i) => i.name.replace(/\s*\(.*\)$/, "")).join(" · ")}</div>
+                <div className="truncate text-[12px] text-ink-3">{sm.items.map((i) => `${shortName(i.name)}${i.portion ? ` ${i.portion}` : ""}`).join(" · ")}</div>
                 <MacroLine m={sm.totals} />
               </div>
               <div className="flex shrink-0 items-center gap-1">
@@ -364,15 +405,18 @@ export function PlanBuilder({ initial }: { initial: PlanData }) {
       <Sheet open={edit !== null} onClose={closeEdit} label="Set meal">
         {edit ? (
           <div className="flex flex-col gap-4 pt-1">
-            <h2 className="text-[20px] font-semibold">{edit.id ? "Edit set meal" : "New set meal"}</h2>
+            <h2 className="text-[20px] font-semibold">{edit.entryId ? `${edit.name} · this day only` : edit.id ? "Edit set meal" : "New set meal"}</h2>
+            {edit.entryId ? <p className="-mt-2 text-[13px] text-ink-3">Changes here apply to this day. The set meal itself stays as it is.</p> : null}
             <input value={edit.name} onChange={(e) => setEdit({ ...edit, name: e.target.value })} placeholder="Name" aria-label="Set meal name" className="h-11 rounded-control border border-hairline bg-card px-3 text-[17px] font-semibold" />
-            <div className="hub-chrome grid grid-cols-4 rounded-control p-0.5" role="tablist" aria-label="Slot">
-              {SLOTS.map((s) => (
-                <button key={s} type="button" role="tab" aria-selected={edit.slot === s} onClick={() => setEdit({ ...edit, slot: s })} className={`h-9 rounded-[10px] text-[13px] font-semibold ${edit.slot === s ? "bg-elevated text-ink shadow-sm" : "text-ink-2"}`}>
-                  {SLOT_LABEL[s]}
-                </button>
-              ))}
-            </div>
+            {!edit.entryId ? (
+              <div className="hub-chrome grid grid-cols-4 rounded-control p-0.5" role="tablist" aria-label="Slot">
+                {SLOTS.map((s) => (
+                  <button key={s} type="button" role="tab" aria-selected={edit.slot === s} onClick={() => setEdit({ ...edit, slot: s })} className={`h-9 rounded-[10px] text-[13px] font-semibold ${edit.slot === s ? "bg-elevated text-ink shadow-sm" : "text-ink-2"}`}>
+                    {SLOT_LABEL[s]}
+                  </button>
+                ))}
+              </div>
+            ) : null}
             <ItemComposer items={edit.items} onChange={(items) => setEdit({ ...edit, items })} />
             <div className="grid grid-cols-2 gap-2">
               <button type="button" onClick={closeEdit} className="hub-press h-12 rounded-full border border-hairline text-[15px] font-semibold">Cancel</button>

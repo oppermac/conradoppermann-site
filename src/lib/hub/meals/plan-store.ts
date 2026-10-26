@@ -21,7 +21,13 @@ export const PlanItemSchema = z.object({
   proteinG: z.number().min(0),
   carbsG: z.number().min(0),
   fatG: z.number().min(0),
+  qty: z.number().positive().nullable().optional(),
+  basis: z.enum(["per100g", "perUnit"]).nullable().optional(),
+  unitLabel: z.string().max(40).nullable().optional(),
+  unitGrams: z.number().positive().nullable().optional(),
+  base: z.object({ kcal: z.number().min(0), proteinG: z.number().min(0), carbsG: z.number().min(0), fatG: z.number().min(0) }).nullable().optional(),
 });
+export const EntryPatchSchema = z.object({ name: z.string().min(1).max(120).optional(), items: z.array(PlanItemSchema).min(1).max(20) });
 export const SetMealSchema = z.object({
   name: z.string().min(1).max(120),
   slot: z.enum(["breakfast", "lunch", "snack", "dinner"]),
@@ -115,6 +121,18 @@ export async function addEntry(input: z.infer<typeof EntrySchema>): Promise<{ id
   const position = existing.length ? Math.max(...existing.map((e) => e.position)) + 1 : 0;
   const [r] = await db.insert(planEntries).values({ weekday: input.weekday, slot: input.slot, position, planMealId: input.planMealId ?? null, name: input.name ?? null, items: (input.items as PlanItem[] | undefined) ?? null }).returning({ id: planEntries.id });
   return r;
+}
+/** Customise a placed entry for its day: it stops following the set meal and keeps its own items. */
+export async function updateEntry(id: string, patch: z.infer<typeof EntryPatchSchema>): Promise<boolean> {
+  const [cur] = await db.select({ id: planEntries.id, planMealId: planEntries.planMealId, name: planEntries.name }).from(planEntries).where(eq(planEntries.id, id));
+  if (!cur) return false;
+  let name = patch.name ?? cur.name;
+  if (!name && cur.planMealId) {
+    const [sm] = await db.select({ name: planMeals.name }).from(planMeals).where(eq(planMeals.id, cur.planMealId));
+    name = sm?.name ?? "Meal";
+  }
+  await db.update(planEntries).set({ planMealId: null, name: name ?? "Meal", items: patch.items as PlanItem[] }).where(eq(planEntries.id, id));
+  return true;
 }
 export async function removeEntry(id: string): Promise<void> {
   await db.delete(planEntries).where(eq(planEntries.id, id));

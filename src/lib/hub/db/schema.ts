@@ -274,7 +274,9 @@ export const foods = pgTable(
 );
 
 /** Weekly meal plan built by Conrad: saved set meals (templates) placed into weekday/slot entries. */
-export type PlanItem = { foodId?: string | null; name: string; portion: string | null; grams: number | null; kcal: number; proteinG: number; carbsG: number; fatG: number };
+export type PlanItemBase = { kcal: number; proteinG: number; carbsG: number; fatG: number };
+/** `qty`/`basis`/`base` let a row be re-sized later: macros = base × (basis perUnit ? qty : qty / 100). */
+export type PlanItem = { foodId?: string | null; name: string; portion: string | null; grams: number | null; kcal: number; proteinG: number; carbsG: number; fatG: number; qty?: number | null; basis?: "per100g" | "perUnit" | null; unitLabel?: string | null; unitGrams?: number | null; base?: PlanItemBase | null };
 export const planMeals = pgTable("plan_meals", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
