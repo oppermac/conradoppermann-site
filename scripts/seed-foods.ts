@@ -44,6 +44,7 @@ const FOODS: F[] = [
   { name: "Kidney beans, drained", kcal: 100, p: 7, c: 17, f: 0.5, fibre: 6, qty: 120, source: E, tags: ["carbs", "beans"] },
   // --- veg ---
   { name: "Mixed peppers, raw", brand: "Lidl", basis: "perUnit", unitLabel: "pepper", unitGrams: 185, kcal: 44, p: 1.5, c: 7, f: 0.4, fibre: 3.7, qty: 1, source: L, tags: ["veg"], notes: "One whole pepper ≈ 185 g (Conrad). Per 100 g: 24 kcal, 0.8 P, 3.8 C, 0.2 F." },
+  { name: "Sweet pointed peppers", basis: "perUnit", unitLabel: "pepper", unitGrams: 85, kcal: 20, p: 0.7, c: 3.2, f: 0.2, fibre: 1.7, qty: 1, source: E, tags: ["veg"], notes: "Same per-100 g values as mixed peppers; one pepper ≈ 85 g (Conrad)." },
   { name: "Snack peppers, raw", kcal: 24, p: 0.8, c: 3.8, f: 0.2, fibre: 2, qty: 100, source: E, tags: ["veg"], notes: "Same as mixed peppers; 4 mini peppers ≈ 150 g." },
   { name: "Broccoli, raw", kcal: 34, p: 2.8, c: 7, f: 0.4, fibre: 2.6, qty: 150, source: E, tags: ["veg"] },
   { name: "Spring onions", kcal: 32, p: 1.8, c: 7, f: 0.2, fibre: 2.6, qty: 40, source: E, tags: ["veg"], notes: "One spring onion ≈ 15–20 g." },
