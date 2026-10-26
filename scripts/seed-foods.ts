@@ -18,10 +18,12 @@ const FOODS: F[] = [
   { name: "Gluten-free oats", kcal: 375, p: 12.5, c: 62, f: 7.5, fibre: 10, qty: 40, source: E, tags: ["shake", "carbs"] },
   { name: "Sport-Mix nuts", brand: "Alesto (Lidl)", kcal: 630, p: 22.9, c: 11.2, f: 53.1, fibre: 7.8, qty: 30, source: L, tags: ["shake", "nuts", "snack"], notes: "Cashews, peanuts, walnuts, almonds, hazelnuts. 150 g bag = 5 × 30 g." },
   // --- meat & protein ---
-  { name: "Chicken breast fillets, raw", brand: "Lidl free range", kcal: 106, p: 24, c: 0, f: 1.1, qty: 250, source: L, tags: ["meat", "protein"], notes: "454 g pack." },
-  { name: "Rib eye steak, raw", brand: "Deluxe Irish Angus (Lidl)", kcal: 201, p: 21.6, c: 0, f: 12.7, qty: 227, source: L, tags: ["meat", "red meat"], notes: "2 × 227 g steaks per 454 g pack; one steak = 456 kcal, 49 g protein, 29 g fat." },
+  { name: "Chicken breast fillets, raw", brand: "Lidl free range", basis: "perUnit", unitLabel: "breast", unitGrams: 151, kcal: 160, p: 36.2, c: 0, f: 1.7, qty: 1.5, source: L, tags: ["meat", "protein"], notes: "454 g pack of 3; one breast ≈ 151 g. Label per 100 g: 106 kcal, 24 g protein, 1.1 g fat." },
+  { name: "Rib eye steak, raw", brand: "Deluxe Irish Angus (Lidl)", basis: "perUnit", unitLabel: "steak", unitGrams: 227, kcal: 456, p: 49, c: 0, f: 28.8, qty: 1, source: L, tags: ["meat", "red meat"], notes: "454 g pack of 2; half a steak is a sensible portion on a fat-capped day. Label per 100 g: 201 kcal, 21.6 g protein, 12.7 g fat." },
   { name: "Turkey burgers", brand: "Lidl", basis: "perUnit", unitLabel: "burger", unitGrams: 100, kcal: 105, p: 19, c: 3.5, f: 1.4, qty: 2, source: L, tags: ["meat", "protein"], notes: "Contains wheat rusk (gluten)." },
   { name: "Turkey mince 5%, raw", kcal: 120, p: 22, c: 0, f: 3, qty: 200, source: E, tags: ["meat", "protein"] },
+  { name: "Mini pepper", basis: "perUnit", unitLabel: "pepper", unitGrams: 37, kcal: 9, p: 0.3, c: 1.4, f: 0.1, qty: 4, source: E, tags: ["veg"], notes: "Snack peppers by the piece; ~37 g each." },
+  { name: "Spring onion", basis: "perUnit", unitLabel: "spring onion", unitGrams: 18, kcal: 6, p: 0.3, c: 1.3, f: 0, qty: 2, source: E, tags: ["veg"] },
   { name: "Back bacon, fried, fat trimmed", kcal: 200, p: 26, c: 0, f: 10, qty: 100, source: E, tags: ["meat"], notes: "Per 100 g cooked; 4 rashers ≈ 100 g." },
   { name: "Sliced chicken or turkey", kcal: 110, p: 22, c: 1, f: 2, qty: 100, source: E, tags: ["meat", "snack"] },
   // --- ready meals ---

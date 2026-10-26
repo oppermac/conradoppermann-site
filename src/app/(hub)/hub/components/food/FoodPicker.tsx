@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Search } from "lucide-react";
+import { Minus, Plus, Search } from "lucide-react";
 
 export type FoodRow = {
   id: string;
@@ -70,6 +70,13 @@ export function FoodPicker({ onPick, autoFocus = true }: { onPick: (item: Picked
     setOpen(f);
     setQty(String(f.defaultQty ?? (f.basis === "perUnit" ? 1 : 100)));
   }
+  function step(delta: number) {
+    if (!open) return;
+    const cur = parseFloat(qty.replace(",", ".")) || 0;
+    const inc = open.basis === "perUnit" ? 0.5 : 25;
+    const next = Math.max(open.basis === "perUnit" ? 0.5 : 25, Math.round((cur + delta * inc) * 100) / 100);
+    setQty(String(next));
+  }
   function confirm() {
     if (!open || !preview || preview.kcal < 0 || !(parseFloat(qty.replace(",", ".")) > 0)) return;
     onPick(preview);
@@ -93,7 +100,13 @@ export function FoodPicker({ onPick, autoFocus = true }: { onPick: (item: Picked
             <div className="text-[12.5px] text-ink-3">{per(open)}: {Math.round(open.kcal)} kcal · P {Math.round(open.proteinG)} · C {Math.round(open.carbsG)} · F {Math.round(open.fatG)}</div>
           </div>
           <div className="flex items-center gap-2">
-            <input inputMode="decimal" value={qty} onChange={(e) => setQty(e.target.value)} onKeyDown={(e) => e.key === "Enter" && confirm()} aria-label="Quantity" className="hub-tabular h-11 w-24 rounded-control border border-hairline bg-card px-3 text-right text-[17px]" autoFocus />
+            <button type="button" onClick={() => step(-1)} aria-label={open.basis === "perUnit" ? "Half a unit less" : "25 g less"} className="hub-press flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-hairline text-ink-2">
+              <Minus size={16} aria-hidden />
+            </button>
+            <input inputMode="decimal" value={qty} onChange={(e) => setQty(e.target.value)} onKeyDown={(e) => e.key === "Enter" && confirm()} aria-label="Quantity" className="hub-tabular h-11 w-20 rounded-control border border-hairline bg-card px-2 text-center text-[17px]" autoFocus />
+            <button type="button" onClick={() => step(1)} aria-label={open.basis === "perUnit" ? "Half a unit more" : "25 g more"} className="hub-press flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-hairline text-ink-2">
+              <Plus size={16} aria-hidden />
+            </button>
             <span className="text-[15px] text-ink-2">{open.basis === "perUnit" ? `${open.unitLabel ?? "unit"}${parseFloat(qty) === 1 ? "" : "s"}` : "g"}</span>
             <div className="ml-auto flex gap-1.5">
               {QUICK[open.basis].map((n) => (
