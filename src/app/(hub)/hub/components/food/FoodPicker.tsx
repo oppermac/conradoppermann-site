@@ -32,6 +32,10 @@ export function itemFor(food: FoodRow, qty: number): PickedItem {
 
 const QUICK: Record<"per100g" | "perUnit", number[]> = { per100g: [50, 100, 150, 200, 250], perUnit: [0.5, 1, 1.5, 2, 3] };
 
+/** Pan-frying leaves roughly a teaspoon of oil on the food. Logged as its own line so it stays visible and editable. */
+const FRYING_OIL: PickedItem = { foodId: "", name: "Olive oil, for frying", portion: "1 tsp · 5 g", grams: 5, kcal: 44, proteinG: 0, carbsG: 0, fatG: 5 };
+const FRYABLE = /chicken|steak|beef|turkey|burger|bacon|mince|lamb|pork|egg|onion|pepper|mushroom|potato|rice|prawn/i;
+
 /**
  * Search the food library and add one at a quantity. Tap a food to open its quantity row; the macros update as
  * you type. New foods are added inline with per-100 g or per-unit values.
@@ -42,6 +46,7 @@ export function FoodPicker({ onPick, autoFocus = true }: { onPick: (item: Picked
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState<FoodRow | null>(null);
   const [qty, setQty] = useState("");
+  const [fried, setFried] = useState(false);
   const [adding, setAdding] = useState(false);
 
   useEffect(() => {
@@ -80,7 +85,9 @@ export function FoodPicker({ onPick, autoFocus = true }: { onPick: (item: Picked
   function confirm() {
     if (!open || !preview || preview.kcal < 0 || !(parseFloat(qty.replace(",", ".")) > 0)) return;
     onPick(preview);
+    if (fried) onPick(FRYING_OIL);
     setOpen(null);
+    setFried(false);
     setQ("");
   }
 
@@ -119,7 +126,13 @@ export function FoodPicker({ onPick, autoFocus = true }: { onPick: (item: Picked
           {preview ? (
             <div className="hub-tabular text-[13px] text-ink-2">
               {preview.kcal} kcal · P {Math.round(preview.proteinG)} · C {Math.round(preview.carbsG)} · F {Math.round(preview.fatG)}
+              {fried ? <span className="text-ink-3"> + oil 44 kcal · F 5</span> : null}
             </div>
+          ) : null}
+          {FRYABLE.test(open.name) ? (
+            <label className="flex items-center gap-2 text-[14px] text-ink-2">
+              <input type="checkbox" checked={fried} onChange={(e) => setFried(e.target.checked)} className="h-4 w-4" /> Fried in oil (adds 1 tsp, 44 kcal). Baked, microwaved or raw adds nothing.
+            </label>
           ) : null}
           <div className="grid grid-cols-2 gap-2">
             <button type="button" onClick={() => setOpen(null)} className="hub-press h-10 rounded-full border border-hairline text-[14px] font-semibold">Back</button>
