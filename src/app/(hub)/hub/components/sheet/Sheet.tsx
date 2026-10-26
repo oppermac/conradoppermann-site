@@ -47,12 +47,13 @@ export function Sheet({ open, onClose, children, label = "Log" }: { open: boolea
     [y, reduce],
   );
 
-  // Open: arrive from the bottom to the mid detent.
+  // Open: arrive from the bottom. Phones land on the mid detent; wide screens open fully so forms and their
+  // buttons are visible without dragging.
   useEffect(() => {
     if (!open) return;
     closingRef.current = false;
     y.set(dismissY);
-    const controls = settle(midY);
+    const controls = settle(window.innerWidth >= 1024 ? 0 : midY);
     return () => controls.stop();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
