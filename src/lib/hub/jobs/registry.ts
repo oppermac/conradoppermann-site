@@ -61,7 +61,7 @@ export const JOBS: Job[] = [
   },
   {
     name: "whoop.reconcile.deep",
-    due: (now) => (now.hour === 4 ? now.dayKey : null),
+    due: (now) => (now.hour === 7 ? now.dayKey : null), // the cron sleeps overnight (06:00–23:30 UTC); 07:00 Dublin has a tick in both summer and winter
     run: async () => {
       if (!(await connected("whoop"))) return { skipped: "whoop not connected" };
       return syncSince(7);
@@ -69,7 +69,7 @@ export const JOBS: Job[] = [
   },
   {
     name: "targets.derive",
-    due: (now) => (now.weekday === 1 && now.hour === 5 ? now.dayKey : null),
+    due: (now) => (now.weekday === 1 && now.hour === 7 ? now.dayKey : null),
     run: async () => {
       if (!(await connected("whoop"))) return { skipped: "whoop not connected" };
       return recomputeNutritionTargets();
