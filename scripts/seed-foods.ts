@@ -65,6 +65,14 @@ const FOODS: F[] = [
   { name: "Banana", basis: "perUnit", unitLabel: "banana", unitGrams: 120, kcal: 105, p: 1.3, c: 27, f: 0.4, fibre: 3, qty: 1, source: E, tags: ["fruit"] },
   { name: "Apple", basis: "perUnit", unitLabel: "apple", unitGrams: 180, kcal: 80, p: 0.4, c: 21, f: 0.3, fibre: 4, qty: 1, source: E, tags: ["fruit"] },
   { name: "Medjool date", basis: "perUnit", unitLabel: "date", unitGrams: 24, kcal: 66, p: 0.4, c: 18, f: 0, fibre: 1.6, qty: 2, source: E, tags: ["fruit", "sweet"] },
+  // --- coffees: coconut milk drink (~20 kcal / 100 ml) and one sugar (4 g, 16 kcal) each; black coffee itself ~2 kcal
+  { name: "Black coffee, 1 sugar", basis: "perUnit", unitLabel: "cup", unitGrams: 250, kcal: 18, p: 0, c: 4, f: 0, qty: 1, source: E, tags: ["drink", "coffee"], notes: "Americano or filter, no milk, one sugar." },
+  { name: "Espresso, 1 sugar", basis: "perUnit", unitLabel: "shot", unitGrams: 40, kcal: 18, p: 0, c: 4, f: 0, qty: 1, source: E, tags: ["drink", "coffee"] },
+  { name: "Americano, splash of coconut milk, 1 sugar", basis: "perUnit", unitLabel: "cup", unitGrams: 250, kcal: 24, p: 0.1, c: 4.8, f: 0.3, qty: 1, source: E, tags: ["drink", "coffee"], notes: "≈30 ml coconut milk drink." },
+  { name: "Instant coffee, coconut milk, 1 sugar", basis: "perUnit", unitLabel: "mug", unitGrams: 250, kcal: 28, p: 0.1, c: 5.3, f: 0.5, qty: 1, source: E, tags: ["drink", "coffee"], notes: "≈50 ml coconut milk drink." },
+  { name: "Flat white, coconut milk, 1 sugar", basis: "perUnit", unitLabel: "cup", unitGrams: 180, kcal: 48, p: 0.3, c: 7.8, f: 1.5, qty: 1, source: E, tags: ["drink", "coffee"], notes: "≈150 ml coconut milk drink. Barista coconut milk roughly doubles the milk calories." },
+  { name: "Cappuccino, coconut milk, 1 sugar", basis: "perUnit", unitLabel: "cup", unitGrams: 220, kcal: 54, p: 0.4, c: 8.5, f: 1.8, qty: 1, source: E, tags: ["drink", "coffee"], notes: "≈180 ml coconut milk drink." },
+  { name: "Latte, coconut milk, 1 sugar", basis: "perUnit", unitLabel: "cup", unitGrams: 300, kcal: 68, p: 0.5, c: 10.3, f: 2.5, qty: 1, source: E, tags: ["drink", "coffee"], notes: "≈250 ml coconut milk drink." },
   { name: "Coke Zero", basis: "perUnit", unitLabel: "can", unitGrams: 330, kcal: 1, p: 0, c: 0, f: 0, qty: 1, source: L, tags: ["drink"] },
 ];
 
