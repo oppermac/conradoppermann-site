@@ -273,6 +273,35 @@ export const foods = pgTable(
   (t) => [index("foods_name_idx").on(t.name)],
 );
 
+/** Weekly meal plan built by Conrad: saved set meals (templates) placed into weekday/slot entries. */
+export type PlanItem = { foodId?: string | null; name: string; portion: string | null; grams: number | null; kcal: number; proteinG: number; carbsG: number; fatG: number };
+export const planMeals = pgTable("plan_meals", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  slot: text("slot").notNull().default("dinner").$type<MealSlot>(),
+  items: jsonb("items").notNull().$type<PlanItem[]>(),
+  notes: text("notes"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+});
+export const planEntries = pgTable(
+  "plan_entries",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    /** ISO weekday 1 = Monday … 7 = Sunday. */
+    weekday: integer("weekday").notNull(),
+    slot: text("slot").notNull().$type<MealSlot>(),
+    position: integer("position").notNull().default(0),
+    /** A placed set meal (items read from plan_meals) … */
+    planMealId: uuid("plan_meal_id").references(() => planMeals.id, { onDelete: "cascade" }),
+    /** … or an ad-hoc meal built straight from foods. */
+    name: text("name"),
+    items: jsonb("items").$type<PlanItem[]>(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("plan_entries_weekday_idx").on(t.weekday)],
+);
+
 export const activities = pgTable(
   "activities",
   {

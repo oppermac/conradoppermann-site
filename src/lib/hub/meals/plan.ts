@@ -1,4 +1,6 @@
 /**
+ * (Legacy) the October 2026 starter plan. /hub/plan is now built by Conrad in the hub (plan_meals + plan_entries);
+ * this file only feeds scripts/add-meal-presets.ts and scripts/seed-plan.ts (optional import).
  * Conrad's weekly food plan — Darragh's targets (200 g protein, carb cycling).
  * Constraints: no gluten, dairy, eggs or fish; burrito places = bowls only; training Tue/Thu/Sat.
  * Macros are label numbers for the powders and reasonable estimates for everything else (see notes).
