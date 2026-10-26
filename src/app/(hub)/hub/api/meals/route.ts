@@ -7,6 +7,7 @@ import { dayKey } from "@/lib/hub/time";
 import { SaveMealSchema } from "@/lib/hub/meals/schema";
 import { dailyTotals, mealsForDay, recentMeals, saveMeal } from "@/lib/hub/meals/store";
 import { targetsForDay } from "@/lib/hub/meals/day-targets";
+import { markFoodsUsed } from "@/lib/hub/meals/foods";
 
 export async function GET(req: Request) {
   const denied = await requireSession();
@@ -27,6 +28,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid meal", issues: (parsed.error as z.ZodError).issues }, { status: 400 });
   }
   const saved = await saveMeal(parsed.data);
+  if (parsed.data.foodIds?.length) await markFoodsUsed(parsed.data.foodIds).catch(() => {});
   const totals = await dailyTotals(saved.day);
   return NextResponse.json({ ok: true, ...saved, totals });
 }

@@ -15,6 +15,13 @@
       "when": 1791732175936,
       "tag": "0001_silky_kid_colt",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793034266044,
+      "tag": "0002_purple_mikhail_rasputin",
+      "breakpoints": true
     }
   ]
 }

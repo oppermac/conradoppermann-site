@@ -56,6 +56,8 @@ export const SaveMealSchema = z.object({
   carbsG: z.number().min(0),
   fatG: z.number().min(0),
   fibreG: z.number().min(0).nullable().optional(),
+  /** Library foods the items came from; bumps their use counts. */
+  foodIds: z.array(z.string().uuid()).max(30).optional(),
   confidence: z.number().min(0).max(1).nullable().optional(),
   aiModel: z.string().nullable().optional(),
   aiRaw: z.unknown().optional(),

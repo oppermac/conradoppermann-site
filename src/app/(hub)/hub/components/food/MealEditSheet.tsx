@@ -1,8 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Library, Plus, Trash2 } from "lucide-react";
 import type { MealRow } from "./MealList";
+import { FoodPicker } from "./FoodPicker";
 
 type Slot = "breakfast" | "lunch" | "dinner" | "snack";
 const SLOTS: Slot[] = ["breakfast", "lunch", "dinner", "snack"];
@@ -25,6 +26,7 @@ export function MealEditForm({ meal, onClose, onSaved }: { meal: MealRow; onClos
   );
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fromLibrary, setFromLibrary] = useState(false);
 
   const totals = useMemo(
     () => items.reduce((a, it) => ({ kcal: a.kcal + it.kcal, proteinG: a.proteinG + it.proteinG, carbsG: a.carbsG + it.carbsG, fatG: a.fatG + it.fatG }), { kcal: 0, proteinG: 0, carbsG: 0, fatG: 0 }),
@@ -97,9 +99,26 @@ export function MealEditForm({ meal, onClose, onSaved }: { meal: MealRow; onClos
             </li>
           ))}
         </ul>
-        <button type="button" onClick={() => setItems((xs) => [...xs, { name: "", portion: "", grams: null, kcal: 0, proteinG: 0, carbsG: 0, fatG: 0 }])} className="hub-press flex h-10 items-center justify-center gap-1.5 self-start rounded-full border border-hairline px-3.5 text-[14px] font-semibold text-ink-2">
-          <Plus size={16} aria-hidden /> Add item
-        </button>
+        {fromLibrary ? (
+          <div className="hub-elevated p-3.5">
+            <FoodPicker
+              onPick={(it) => {
+                setItems((xs) => [...xs, { name: it.name, portion: it.portion, grams: it.grams, kcal: it.kcal, proteinG: it.proteinG, carbsG: it.carbsG, fatG: it.fatG }]);
+                setFromLibrary(false);
+              }}
+            />
+            <button type="button" onClick={() => setFromLibrary(false)} className="hub-press mt-2 text-[13px] font-semibold text-ink-3">Close</button>
+          </div>
+        ) : (
+          <div className="flex flex-wrap gap-2">
+            <button type="button" onClick={() => setFromLibrary(true)} className="hub-press flex h-10 items-center justify-center gap-1.5 rounded-full border border-hairline px-3.5 text-[14px] font-semibold text-ink-2">
+              <Library size={16} aria-hidden /> From library
+            </button>
+            <button type="button" onClick={() => setItems((xs) => [...xs, { name: "", portion: "", grams: null, kcal: 0, proteinG: 0, carbsG: 0, fatG: 0 }])} className="hub-press flex h-10 items-center justify-center gap-1.5 rounded-full border border-hairline px-3.5 text-[14px] font-semibold text-ink-2">
+              <Plus size={16} aria-hidden /> Blank item
+            </button>
+          </div>
+        )}
 
         <div className="hub-elevated flex items-center justify-between px-4 py-3 text-[15px]">
           <span className="font-semibold">Total</span>

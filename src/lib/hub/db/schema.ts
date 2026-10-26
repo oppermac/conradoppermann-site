@@ -238,6 +238,41 @@ export const mealItems = pgTable(
   (t) => [index("meal_items_meal_idx").on(t.mealId)],
 );
 
+/**
+ * Food library: raw ingredients and products Conrad buys, with macros per 100 g (or per unit for scoops,
+ * burgers, packs). Meals are built by picking foods and quantities; label numbers beat estimates.
+ */
+export type FoodBasis = "per100g" | "perUnit";
+export type FoodSource = "label" | "estimate" | "website";
+export const foods = pgTable(
+  "foods",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    name: text("name").notNull(),
+    brand: text("brand"),
+    basis: text("basis").notNull().default("per100g").$type<FoodBasis>(),
+    /** For perUnit foods: what one unit is called ("scoop", "burger", "pack") and how much it weighs, if known. */
+    unitLabel: text("unit_label"),
+    unitGrams: real("unit_grams"),
+    /** Macros per 100 g (per100g) or per unit (perUnit). */
+    kcal: real("kcal").notNull(),
+    proteinG: real("protein_g").notNull(),
+    carbsG: real("carbs_g").notNull(),
+    fatG: real("fat_g").notNull(),
+    fibreG: real("fibre_g"),
+    /** Typical amount to pre-fill when picked: grams for per100g, units for perUnit. */
+    defaultQty: real("default_qty"),
+    source: text("source").notNull().default("estimate").$type<FoodSource>(),
+    tags: jsonb("tags").$type<string[]>(),
+    notes: text("notes"),
+    useCount: integer("use_count").notNull().default(0),
+    lastUsedAt: ts("last_used_at"),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("foods_name_idx").on(t.name)],
+);
+
 export const activities = pgTable(
   "activities",
   {
