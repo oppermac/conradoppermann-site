@@ -45,6 +45,10 @@ const FOODS: F[] = [
   // --- veg ---
   { name: "Mixed peppers, raw", brand: "Lidl", basis: "perUnit", unitLabel: "pepper", unitGrams: 185, kcal: 44, p: 1.5, c: 7, f: 0.4, fibre: 3.7, qty: 1, source: L, tags: ["veg"], notes: "One whole pepper ≈ 185 g (Conrad). Per 100 g: 24 kcal, 0.8 P, 3.8 C, 0.2 F." },
   { name: "Sweet pointed peppers", basis: "perUnit", unitLabel: "pepper", unitGrams: 85, kcal: 20, p: 0.7, c: 3.2, f: 0.2, fibre: 1.7, qty: 1, source: E, tags: ["veg"], notes: "Same per-100 g values as mixed peppers; one pepper ≈ 85 g (Conrad)." },
+  { name: "White onion, large", basis: "perUnit", unitLabel: "onion", unitGrams: 180, kcal: 72, p: 2, c: 16.7, f: 0.2, fibre: 3.1, qty: 1, source: E, tags: ["veg"], notes: "Raw onion per 100 g (USDA): 40 kcal, 1.1 P, 9.3 C, 0.1 F. Large ≈ 180 g assumed." },
+  { name: "White onion, small", basis: "perUnit", unitLabel: "onion", unitGrams: 75, kcal: 30, p: 0.8, c: 7, f: 0.1, fibre: 1.3, qty: 1, source: E, tags: ["veg"], notes: "Small ≈ 75 g (Conrad)." },
+  { name: "Red onion, large", basis: "perUnit", unitLabel: "onion", unitGrams: 180, kcal: 72, p: 2, c: 16.7, f: 0.2, fibre: 3.1, qty: 1, source: E, tags: ["veg"], notes: "Same values as white onion. Large ≈ 180 g assumed." },
+  { name: "Red onion, small", basis: "perUnit", unitLabel: "onion", unitGrams: 75, kcal: 30, p: 0.8, c: 7, f: 0.1, fibre: 1.3, qty: 1, source: E, tags: ["veg"], notes: "Small ≈ 75 g (Conrad)." },
   { name: "Snack peppers, raw", kcal: 24, p: 0.8, c: 3.8, f: 0.2, fibre: 2, qty: 100, source: E, tags: ["veg"], notes: "Same as mixed peppers; 4 mini peppers ≈ 150 g." },
   { name: "Broccoli, raw", kcal: 34, p: 2.8, c: 7, f: 0.4, fibre: 2.6, qty: 150, source: E, tags: ["veg"] },
   { name: "Spring onions", kcal: 32, p: 1.8, c: 7, f: 0.2, fibre: 2.6, qty: 40, source: E, tags: ["veg"], notes: "One spring onion ≈ 15–20 g." },
