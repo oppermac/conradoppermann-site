@@ -37,7 +37,7 @@ const FOODS: F[] = [
   { name: "Original Potato Waffle, oven baked", brand: "Birds Eye", basis: "perUnit", unitLabel: "waffle", unitGrams: 58, kcal: 98, p: 1.25, c: 13, f: 4.4, fibre: 0.8, qty: 2, source: L, tags: ["carbs", "frozen"], notes: "Per 2 waffles 196 kcal. Weight per waffle estimated." },
   { name: "Potato Wedges, lightly spiced, oven cooked", brand: "Harvest Basket (Lidl)", kcal: 134, p: 2.6, c: 20.5, f: 3.9, fibre: 3, qty: 150, source: L, tags: ["carbs", "frozen"], notes: "1 kg bag. Rice/maize coating, no gluten listed." },
   { name: "Hash brown, oven baked", basis: "perUnit", unitLabel: "hash brown", unitGrams: 45, kcal: 78, p: 1.2, c: 10, f: 3.6, qty: 1, source: L, tags: ["carbs", "frozen"] },
-  { name: "Lime & Coriander microwave rice", brand: "Lidl", kcal: 153, p: 3.5, c: 28.3, f: 2.4, fibre: 2, qty: 125, source: L, tags: ["carbs", "rice"], notes: "250 g pouch = 2 servings. Vegan." },
+  { name: "Lime & Coriander microwave rice", brand: "Lidl", basis: "perUnit", unitLabel: "pack", unitGrams: 250, kcal: 383, p: 8.8, c: 70.8, f: 6, fibre: 5, qty: 1, source: L, tags: ["carbs", "rice"], notes: "250 g pouch; half a pack is the label serving. Per 100 g: 153 kcal, 3.5 P, 28.3 C, 2.4 F. Vegan." },
   { name: "Rice, white, dry", kcal: 351, p: 7, c: 78, f: 1, qty: 100, source: E, tags: ["carbs", "rice"], notes: "Weigh dry." },
   { name: "Potatoes, raw", kcal: 77, p: 2, c: 17, f: 0.1, fibre: 2, qty: 300, source: E, tags: ["carbs"] },
   { name: "Gluten-free pasta, dry", kcal: 350, p: 7, c: 76, f: 1, qty: 80, source: E, tags: ["carbs"] },
