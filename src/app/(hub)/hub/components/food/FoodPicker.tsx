@@ -108,13 +108,13 @@ export function FoodPicker({ onPick, autoFocus = true }: { onPick: (item: Picked
               <Plus size={16} aria-hidden />
             </button>
             <span className="text-[15px] text-ink-2">{open.basis === "perUnit" ? `${open.unitLabel ?? "unit"}${parseFloat(qty) === 1 ? "" : "s"}` : "g"}</span>
-            <div className="ml-auto flex gap-1.5">
-              {QUICK[open.basis].map((n) => (
-                <button key={n} type="button" onClick={() => setQty(String(n))} className={`hub-press hub-tabular h-8 rounded-full px-2.5 text-[12px] font-semibold ${String(n) === qty ? "bg-ink text-page" : "border border-hairline text-ink-2"}`}>
-                  {n}
-                </button>
-              ))}
-            </div>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {QUICK[open.basis].map((n) => (
+              <button key={n} type="button" onClick={() => setQty(String(n))} className={`hub-press hub-tabular h-8 rounded-full px-3 text-[12px] font-semibold ${String(n) === qty ? "bg-ink text-page" : "border border-hairline text-ink-2"}`}>
+                {n}
+              </button>
+            ))}
           </div>
           {preview ? (
             <div className="hub-tabular text-[13px] text-ink-2">
