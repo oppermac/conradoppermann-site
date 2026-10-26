@@ -150,7 +150,7 @@ export function FoodPicker({ onPick, autoFocus = true }: { onPick: (item: Picked
           }}
         />
       ) : (
-        <ul className="max-h-[40vh] divide-y divide-hairline overflow-y-auto">
+        <ul className="divide-y divide-hairline">
           {rows.map((f) => (
             <li key={f.id}>
               <button type="button" onClick={() => choose(f)} className="hub-press flex w-full items-center justify-between gap-3 py-2.5 text-left">
