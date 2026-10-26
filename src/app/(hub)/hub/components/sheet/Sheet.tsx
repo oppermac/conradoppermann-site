@@ -2,6 +2,7 @@
 
 import { AnimatePresence, animate, motion, useMotionValue, useReducedMotion, useTransform, type PanInfo } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 /** Apple's momentum projection (Designing Fluid Interfaces). */
 export function project(velocity: number, deceleration = 0.998): number {
@@ -22,6 +23,12 @@ export function Sheet({ open, onClose, children, label = "Log" }: { open: boolea
   const [vh, setVh] = useState(800);
   const sheetRef = useRef<HTMLDivElement>(null);
   const closingRef = useRef(false);
+  // Portal to <body>: #hub-page is scaled while a sheet is open, and a fixed element inside a transformed
+  // ancestor is positioned against that ancestor, so a sheet rendered inside the page would land off-screen.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    queueMicrotask(() => setMounted(true));
+  }, []);
 
   const dismissY = vh * TOP_FRACTION;
   const midY = vh * (TOP_FRACTION - MID_FRACTION);
@@ -112,7 +119,8 @@ export function Sheet({ open, onClose, children, label = "Log" }: { open: boolea
     settle(target, v);
   }
 
-  return (
+  if (!mounted) return null;
+  return createPortal(
     <AnimatePresence>
       {open ? (
         <>
@@ -150,6 +158,7 @@ export function Sheet({ open, onClose, children, label = "Log" }: { open: boolea
           </motion.div>
         </>
       ) : null}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }
