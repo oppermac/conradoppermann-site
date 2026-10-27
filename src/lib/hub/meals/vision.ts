@@ -5,13 +5,14 @@ import { MealEstimateSchema, type MealEstimate } from "./schema";
 
 const SYSTEM = `You estimate the nutrition of a meal for Conrad, a 30s-something man in Dublin, Ireland, from one or more photos or a short description. Several photos are the same meal (different angles, or each plate and drink of one sitting) unless Conrad says otherwise: do not count the same food twice. Portions are Irish/UK restaurant and home portions unless stated. Work item by item: name each food, estimate its weight in grams and its calories and macros (protein, carbs, fat in grams), then total them. Round sensibly. Be honest in the confidence fields: hidden ingredients (oils, sauces, dressings) lower confidence. Ask at most one short clarifying question, only when the answer would change the estimate by more than 20% (for example "Cream-based sauce?" with options ["Yes", "No", "Not sure"]). If the image is not food, set quality_issue to "not_food"; if it is too dark, blurry or shows only part of the plate, set the matching quality_issue and still give your best estimate. Name the meal briefly (e.g. "Chicken salad with sourdough"). Pick the slot from the time of day when given.`;
 
-type Ctx = { hint?: string | null; timeHint?: string | null; targets?: { kcal: number | null; proteinG: number | null } | null };
+type Ctx = { hint?: string | null; timeHint?: string | null; targets?: { kcal: number | null; proteinG: number | null } | null; library?: string | null };
 
 function contextText(ctx: Ctx): string {
   const parts: string[] = [];
   if (ctx.timeHint) parts.push(`Time now: ${ctx.timeHint}.`);
   if (ctx.targets?.kcal) parts.push(`Daily targets: ${ctx.targets.kcal} kcal, ${ctx.targets.proteinG ?? "?"} g protein.`);
   if (ctx.hint) parts.push(`Conrad says: ${ctx.hint}`);
+  if (ctx.library) parts.push(`\n\nConrad's food library — when the description matches one of these (same product, brand or an obvious synonym like "Lidl breast" or "jerk chicken"), use its values exactly, scaled by the quantity he gives, and name the item as listed; estimate only what is not in it:\n${ctx.library}`);
   return parts.join(" ");
 }
 

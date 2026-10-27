@@ -9,6 +9,7 @@ import { dublin } from "@/lib/hub/time";
 import { parseMealText } from "@/lib/hub/meals/vision";
 import { slotForHour } from "@/lib/hub/meals/schema";
 import { dailyTotals, saveMeal } from "@/lib/hub/meals/store";
+import { libraryContext } from "@/lib/hub/meals/foods";
 
 export const maxDuration = 60;
 
@@ -26,6 +27,7 @@ export async function POST(req: Request) {
     const result = await parseMealText(parsed.data.text, {
       timeHint: now.hhmm,
       targets: settings ? await targetsForDay(now.dayKey, settings.nutrition) : null,
+      library: await libraryContext().catch(() => null),
     });
     const estimate = { ...result.estimate, slot: result.estimate.slot ?? slotForHour(now.hour + now.minute / 60) };
     if (!parsed.data.autoConfirm) return NextResponse.json({ ok: true, estimate, model: result.model });

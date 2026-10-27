@@ -9,6 +9,7 @@ import { createHubEvent } from "../google/sync";
 import { slotForHour } from "../meals/schema";
 import { mealsForDay, recentMeals, repeatMeal, saveMeal, dailyTotals } from "../meals/store";
 import { parseMealText } from "../meals/vision";
+import { libraryContext } from "../meals/foods";
 import { addDays, dayKey, dublin } from "../time";
 
 export type ToolOutcome = { text: string; summary: string; isError?: boolean; data?: unknown };
@@ -43,7 +44,7 @@ export async function executeTool(name: string, input: Record<string, unknown>):
       case "log_meal": {
         const eatenAt = parseWhen((input.eaten_at as string | null) ?? null);
         const when = dublin(eatenAt);
-        const r = await parseMealText(String(input.text), { timeHint: when.hhmm });
+        const r = await parseMealText(String(input.text), { timeHint: when.hhmm, library: await libraryContext().catch(() => null) });
         const slot = (input.slot as "breakfast" | "lunch" | "dinner" | "snack" | null) ?? r.estimate.slot ?? slotForHour(when.hour + when.minute / 60);
         const saved = await saveMeal({
           name: r.estimate.name,

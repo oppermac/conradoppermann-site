@@ -7,6 +7,7 @@ import { targetsForDay } from "@/lib/hub/meals/day-targets";
 import { dublin } from "@/lib/hub/time";
 import { analyzeMealPhoto } from "@/lib/hub/meals/vision";
 import { slotForHour } from "@/lib/hub/meals/schema";
+import { libraryContext } from "@/lib/hub/meals/foods";
 
 export const maxDuration = 60;
 
@@ -27,6 +28,7 @@ export async function POST(req: Request) {
       hint: parsed.data.hint,
       timeHint: `${now.hhmm} on a ${["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][now.weekday]}`,
       targets: settings ? await targetsForDay(now.dayKey, settings.nutrition) : null,
+      library: await libraryContext().catch(() => null),
     });
     const estimate = { ...result.estimate, slot: result.estimate.slot ?? slotForHour(now.hour + now.minute / 60) };
     return NextResponse.json({ ok: true, estimate, model: result.model, raw: result.raw });

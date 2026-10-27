@@ -32,6 +32,19 @@ export async function searchFoods(q: string, limit = 30): Promise<Food[]> {
   return rows;
 }
 
+/** Compact listing of the whole library for the estimator's prompt: one line per food with its basis and macros. */
+export async function libraryContext(): Promise<string> {
+  const rows = await db.select().from(foods).orderBy(desc(foods.useCount), foods.name).limit(300);
+  const r1 = (n: number) => Math.round(n * 10) / 10;
+  return rows
+    .map((f) => {
+      const label = f.brand ? `${f.name} (${f.brand})` : f.name;
+      const per = f.basis === "perUnit" ? `per ${f.unitLabel ?? "unit"}${f.unitGrams ? ` (${Math.round(f.unitGrams)} g)` : ""}` : "per 100 g";
+      return `${label}: ${per} ${Math.round(f.kcal)} kcal, P ${r1(f.proteinG)}, C ${r1(f.carbsG)}, F ${r1(f.fatG)}`;
+    })
+    .join("\n");
+}
+
 export async function createFood(input: FoodInput): Promise<Food> {
   const [row] = await db
     .insert(foods)
